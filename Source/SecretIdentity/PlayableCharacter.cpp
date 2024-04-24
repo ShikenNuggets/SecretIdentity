@@ -210,22 +210,22 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 	switch (eControlState)
 	{
 		case ControlState::Default:
-			LOG_MSG("Switching to default state");
+			//LOG_MSG("Switching to default state");
 			OnSwitchToDefaultState();
 			break;
 
 		case ControlState::Sprinting:
-			LOG_MSG("Switching to sprinting state");
+			//LOG_MSG("Switching to sprinting state");
 			OnSwitchToSprintingState();
 			break;
 
 		case ControlState::TravelPower_Flight_Strafe:
-			LOG_MSG("Switching to flight strafing state");
+			//LOG_MSG("Switching to flight strafing state");
 			OnSwitchToTravelPowerFlightStrafeState();
 			break;
 
 		case ControlState::TravelPower_Flight_Forward:
-			LOG_MSG("Switching to flying forward state");
+			//LOG_MSG("Switching to flying forward state");
 			OnSwitchToTravelPowerFlightForwardState();
 			break;
 
