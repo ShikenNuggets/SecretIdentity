@@ -7,6 +7,7 @@
 #include "PlayableCharacter.generated.h"
 
 struct FInputActionValue;
+class AWindDirectionalSource;
 class UCameraComponent;
 class UEnhancedInputLocalPlayerSubsystem;
 class UInputMappingContext;
@@ -14,7 +15,7 @@ class UInputAction;
 class UMusicAudioComponent;
 class UPlayableAnimInstance;
 class USpringArmComponent;
-class AWindDirectionalSource;
+class UUserWidget;
 
 class UPlayerCameraBoom;
 class UPlayerCameraComponent;
@@ -169,10 +170,17 @@ private:
 	AWindDirectionalSource* WindSource;
 
 	//-----------------------------------------------------------------------------------------------------//
+	//----------------------- UI --------------------------------------------------------------------------//
+	//-----------------------------------------------------------------------------------------------------//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> HudWidgetClass;
+
+	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal Only Values --------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;
+	UUserWidget* uHudWidget;
 	ControlState eControlState;
 
 	bool bHasTargetRotation;

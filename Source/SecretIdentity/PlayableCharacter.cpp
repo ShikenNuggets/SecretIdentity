@@ -2,6 +2,7 @@
 
 #include "PlayableCharacter.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WindDirectionalSourceComponent.h"
@@ -116,6 +117,17 @@ void APlayableCharacter::BeginPlay()
 		}
 	}
 
+	//TODO - Would probably be better to make a new class that inherits PlayerController, use that, then do this stuff there
+	APlayerController* aPlayerController = Cast<APlayerController>(GetController());
+	if (HudWidgetClass != nullptr && aPlayerController != nullptr)
+	{
+		uHudWidget = CreateWidget(aPlayerController, HudWidgetClass);
+		if (uHudWidget != nullptr)
+		{
+			uHudWidget->AddToViewport();
+		}
+	}
+
 	WARN_IF_NULL(GetWorld());
 	WARN_IF_NULL(GetMesh());
 	WARN_IF_NULL(GetCapsuleComponent());
@@ -139,10 +151,13 @@ void APlayableCharacter::BeginPlay()
 	WARN_IF_NULL(CalmFlyingMusicComponent);
 	WARN_IF_NULL(HeavyFlyingMusicComponent);
 
+	WARN_IF_NULL(HudWidgetClass);
+
 	WARN_IF_NULL(WindSource);
 
 	WARN_IF_NULL(uAnimInstance);
 	WARN_IF_NULL(uInputSubsystem);
+	WARN_IF_NULL(uHudWidget);
 
 	SwitchState(ControlState::Default);
 }
