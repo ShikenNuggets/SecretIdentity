@@ -2,12 +2,16 @@
 
 #include "PlayerCameraBoom.h"
 
+#include "PlayerCameraComponent.h"
 #include "UE_Helpers.h"
 
 UPlayerCameraBoom::UPlayerCameraBoom() : FollowDistanceChangeTime(0.25f), bHasTargetFollowDistance(false), fTargetFollowDistance(0.0f), fTimer(0.0f)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = true;
+
+	bUsePawnControlRotation = true;
+	TargetArmLength = DefaultFollowDistance;
 }
 
 void UPlayerCameraBoom::BeginPlay()
@@ -16,8 +20,10 @@ void UPlayerCameraBoom::BeginPlay()
 	WARN_IF(FMath::IsNearlyZero(FollowDistanceChangeTime) || FollowDistanceChangeTime < 0.0f);
 }
 
-void UPlayerCameraBoom::UpdateTimer(float DeltaTime)
+void UPlayerCameraBoom::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	if (bHasTargetFollowDistance)
 	{
 		fTimer += DeltaTime;
@@ -44,4 +50,22 @@ void UPlayerCameraBoom::SetTargetFollowDistance(float Target)
 	fStartFollowDistance = TargetArmLength;
 	fTargetFollowDistance = Target;
 	fTimer = 0.0f;
+}
+
+void UPlayerCameraBoom::OnPlayerStateChanged(ControlState State)
+{
+	switch (State)
+	{
+		case ControlState::Default: //Intentional fallthrough
+		case ControlState::Sprinting:
+			SetTargetFollowDistance(DefaultFollowDistance);
+			break;
+		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
+		case ControlState::TravelPower_Flight_Forward:
+			SetTargetFollowDistance(FlightFollowDistance);
+			break;
+		default:
+			WARN_IF_MSG(true, "ControlState case not handled in UPlayerCameraBoom::OnPlayerStateChanged!");
+			break;
+	}
 }

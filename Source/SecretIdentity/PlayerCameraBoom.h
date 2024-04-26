@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "SecretIdentity.h"
 #include "PlayerCameraBoom.generated.h"
+
+class UPlayerCameraComponent;
 
 /**
  * 
@@ -17,19 +20,27 @@ class SECRETIDENTITY_API UPlayerCameraBoom : public USpringArmComponent
 public:
 	UPlayerCameraBoom();
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void OnPlayerStateChanged(ControlState State);
+
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	void UpdateTimer(float DeltaTime);
-	void SetTargetFollowDistance(float Target);
-
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCameraBoom", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera Boom", meta = (AllowPrivateAccess = "true"))
+	float DefaultFollowDistance = 400.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera Boom", meta = (AllowPrivateAccess = "true"))
+	float FlightFollowDistance = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera Boom", meta = (AllowPrivateAccess = "true"))
 	float FollowDistanceChangeTime;
 
 	bool bHasTargetFollowDistance;
 	float fStartFollowDistance;
 	float fTargetFollowDistance;
 	float fTimer;
+
+	void SetTargetFollowDistance(float Target);
 };

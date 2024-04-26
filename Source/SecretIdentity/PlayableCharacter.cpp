@@ -52,15 +52,11 @@ APlayableCharacter::APlayableCharacter()
 	{
 		CameraBoom->SetupAttachment(RootComponent);
 		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 40.0f)); //Camera should target the shoulders rather than the back
-		CameraBoom->TargetArmLength = DefaultFollowDistance;
-		CameraBoom->bUsePawnControlRotation = true;
 
 		FollowCamera = CreateDefaultSubobject<UPlayerCameraComponent>(TEXT("FollowCamera"));
 		if (FollowCamera != nullptr)
 		{
 			FollowCamera->SetupAttachment(CameraBoom, UPlayerCameraBoom::SocketName);
-			FollowCamera->bUsePawnControlRotation = false;
-			FollowCamera->FieldOfView = DefaultFOV;
 		}
 	}
 
@@ -168,16 +164,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	if (CameraBoom != nullptr)
-	{
-		CameraBoom->UpdateTimer(DeltaTime);
-	}
-
-	if (FollowCamera != nullptr)
-	{
-		FollowCamera->UpdateTimer(DeltaTime);
-	}
-
 	if (bHasTargetRotation)
 	{
 		fRotationTimer += DeltaTime;
@@ -234,6 +220,17 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 			WARN_IF_MSG(true, "Unhandled eControlState case in APlayableCharacter::SwitchState!");
 			break;
 	}
+
+	//TODO - These would be a good candidate for delegates
+	if (CameraBoom != nullptr)
+	{
+		CameraBoom->OnPlayerStateChanged(NewState);
+	}
+
+	if (FollowCamera != nullptr)
+	{
+		FollowCamera->OnPlayerStateChanged(NewState);
+	}
 }
 
 bool APlayableCharacter::IsStateSwitchValid(ControlState OldState, ControlState NewState)
@@ -262,16 +259,6 @@ void APlayableCharacter::OnSwitchToDefaultState()
 		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-	}
-
-	if (CameraBoom)
-	{
-		CameraBoom->SetTargetFollowDistance(DefaultFollowDistance);
-	}
-
-	if (FollowCamera != nullptr)
-	{
-		FollowCamera->SetTargetFOV(DefaultFOV);
 	}
 
 	if (uAnimInstance)
@@ -321,16 +308,6 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	}
-	
-	if (CameraBoom != nullptr)
-	{
-		CameraBoom->SetTargetFollowDistance(FlightFollowDistance);
-	}
-
-	if (FollowCamera)
-	{
-		FollowCamera->SetTargetFOV(FlightFOV);
-	}	
 
 	if (uAnimInstance)
 	{

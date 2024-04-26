@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SecretIdentity.h"
 #include "PlayableCharacter.generated.h"
 
 struct FInputActionValue;
@@ -20,14 +21,6 @@ class UUserWidget;
 class UPlayerCameraBoom;
 class UPlayerCameraComponent;
 
-enum class ControlState : uint8
-{
-	Default = 0,
-	Sprinting,
-	TravelPower_Flight_Strafe,
-	TravelPower_Flight_Forward
-};
-
 UCLASS()
 class SECRETIDENTITY_API APlayableCharacter : public ACharacter
 {
@@ -36,6 +29,12 @@ class SECRETIDENTITY_API APlayableCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayableCharacter();
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,13 +58,6 @@ protected:
 	// Flight Input
 	void OnFlightStrafeInput(const FInputActionValue& Value);
 	void OnFlightForwardInput(const FInputActionValue& Value);
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
 	//-----------------------------------------------------------------------------------------------------//
@@ -95,42 +87,42 @@ private:
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Global Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* GlobalMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Default Input ---------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SprintAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EnableTravelPowerAction;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Flight Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* FlightMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* FlightStrafeAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* FlightForwardAction;
 
 	//-----------------------------------------------------------------------------------------------------//
@@ -141,18 +133,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UPlayerCameraComponent* FollowCamera;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float DefaultFOV = 90.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float FlightFOV = 120.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float DefaultFollowDistance = 400.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float FlightFollowDistance = 300.0f;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Music -----------------------------------------------------------------------//
@@ -170,7 +150,7 @@ private:
 	AWindDirectionalSource* WindSource;
 
 	//-----------------------------------------------------------------------------------------------------//
-	//----------------------- Internal Only Values --------------------------------------------------------//
+	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;

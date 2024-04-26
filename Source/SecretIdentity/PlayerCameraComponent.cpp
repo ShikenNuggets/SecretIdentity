@@ -8,6 +8,9 @@ UPlayerCameraComponent::UPlayerCameraComponent() : FOVChangeTime(0.25f), bHasTar
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = true;
+
+	bUsePawnControlRotation = false;
+	FieldOfView = DefaultFOV;
 }
 
 void UPlayerCameraComponent::BeginPlay()
@@ -16,8 +19,10 @@ void UPlayerCameraComponent::BeginPlay()
 	WARN_IF(FMath::IsNearlyZero(FOVChangeTime) || FOVChangeTime < 0.0f);
 }
 
-void UPlayerCameraComponent::UpdateTimer(float DeltaTime)
+void UPlayerCameraComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	if (bHasTargetFOV)
 	{
 		fTimer += DeltaTime;
@@ -44,4 +49,22 @@ void UPlayerCameraComponent::SetTargetFOV(float Target)
 	fStartFOV = FieldOfView;
 	fTargetFOV = Target;
 	fTimer = 0.0f;
+}
+
+void UPlayerCameraComponent::OnPlayerStateChanged(ControlState State)
+{
+	switch (State)
+	{
+		case ControlState::Default: //Intentional fallthrough
+		case ControlState::Sprinting:
+			SetTargetFOV(DefaultFOV);
+			break;
+		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
+		case ControlState::TravelPower_Flight_Forward:
+			SetTargetFOV(FlightFOV);
+			break;
+		default:
+			WARN_IF_MSG(true, "ControlState case not handled!");
+			break;
+	}
 }

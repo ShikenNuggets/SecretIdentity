@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
+#include "SecretIdentity.h"
 #include "PlayerCameraComponent.generated.h"
 
 /**
@@ -17,14 +18,20 @@ class SECRETIDENTITY_API UPlayerCameraComponent : public UCameraComponent
 public:
 	UPlayerCameraComponent();
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void OnPlayerStateChanged(ControlState State);
+
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	void UpdateTimer(float DeltaTime);
-	void SetTargetFOV(float Target);
-
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera", meta = (AllowPrivateAccess = "true"))
+	float DefaultFOV = 90.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera", meta = (AllowPrivateAccess = "true"))
+	float FlightFOV = 120.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera", meta = (AllowPrivateAccess = "true"))
 	float FOVChangeTime;
 
@@ -32,4 +39,6 @@ private:
 	float fStartFOV;
 	float fTargetFOV;
 	float fTimer;
+
+	void SetTargetFOV(float Target);
 };
