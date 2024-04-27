@@ -60,10 +60,12 @@ void UPlayerCameraBoom::OnPlayerStateChanged(ControlState State)
 		case ControlState::Sprinting:
 			SetTargetFollowDistance(DefaultFollowDistance);
 			break;
+
 		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
 		case ControlState::TravelPower_Flight_Forward:
 			SetTargetFollowDistance(FlightFollowDistance);
 			break;
+
 		default:
 			WARN_IF_MSG(true, "ControlState case not handled in UPlayerCameraBoom::OnPlayerStateChanged!");
 			break;

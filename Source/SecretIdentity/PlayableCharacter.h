@@ -15,6 +15,7 @@ class UInputMappingContext;
 class UInputAction;
 class UMusicAudioComponent;
 class UPlayableAnimInstance;
+class UPlayCharacterMovementComponent;
 class USpringArmComponent;
 class UUserWidget;
 
@@ -28,7 +29,7 @@ class SECRETIDENTITY_API APlayableCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	APlayableCharacter();
+	APlayableCharacter(const FObjectInitializer& ObjectInitializer);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -71,9 +72,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
 	float DefaultJumpForce = 1200.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
-	float DefaultAirControl = 0.35f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
 	float MaxFlightForwardSpeed = 20000.0f;
@@ -152,6 +150,7 @@ private:
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
+	UPlayCharacterMovementComponent* uMovementComponent;
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;
 	UUserWidget* uHudWidget;

@@ -17,11 +17,13 @@
 #include "PlayableAnimInstance.h"
 #include "PlayerCameraBoom.h"
 #include "PlayerCameraComponent.h"
+#include "PlayCharacterMovementComponent.h"
 #include "MusicAudioComponent.h"
 #include "UE_Helpers.h"
 
 // Sets default values
-APlayableCharacter::APlayableCharacter()
+APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	if (GetCapsuleComponent() != nullptr)
 	{
@@ -32,19 +34,18 @@ APlayableCharacter::APlayableCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	if (GetCharacterMovement() != nullptr)
+	uMovementComponent = Cast<UPlayCharacterMovementComponent>(GetCharacterMovement());
+	if (uMovementComponent != nullptr)
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+		FPlayCharacterMovementOptions options;
+		options.JogSpeed = JogSpeed;
+		options.DefaultSprintMultiplier = DefaultSprintMultiplier;
+		options.DefaultJumpForce = DefaultJumpForce;
+		options.MaxFlightForwardSpeed = MaxFlightForwardSpeed;
+		options.FlightStrafeRotationTime = FlightStrafeRotationTime;
+		options.FlightForwardRotationTime = FlightForwardRotationTime;
 
-		GetCharacterMovement()->JumpZVelocity = DefaultJumpForce;
-		GetCharacterMovement()->AirControl = 0.35f;
-		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
-		GetCharacterMovement()->MinAnalogWalkSpeed = 20.0f;
-		GetCharacterMovement()->BrakingDecelerationWalking = 2000.0f;
-		GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-		GetCharacterMovement()->BrakingDecelerationFlying = 7500.0f;
-		GetCharacterMovement()->GravityScale = 2.5f;
+		uMovementComponent->SetOptions(options);
 	}
 
 	CameraBoom = CreateDefaultSubobject<UPlayerCameraBoom>(TEXT("CameraBoom"));
@@ -138,6 +139,7 @@ void APlayableCharacter::BeginPlay()
 
 	WARN_IF_NULL(WindSource);
 
+	WARN_IF_NULL(uMovementComponent);
 	WARN_IF_NULL(uAnimInstance);
 	WARN_IF_NULL(uInputSubsystem);
 
@@ -231,6 +233,11 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 	{
 		FollowCamera->OnPlayerStateChanged(NewState);
 	}
+
+	if (uMovementComponent)
+	{
+		uMovementComponent->OnPlayerStateChanged(NewState);
+	}
 }
 
 bool APlayableCharacter::IsStateSwitchValid(ControlState OldState, ControlState NewState)
@@ -253,13 +260,6 @@ bool APlayableCharacter::IsStateSwitchValid(ControlState OldState, ControlState 
 void APlayableCharacter::OnSwitchToDefaultState()
 {
 	bHasTargetRotation = false;
-
-	if (GetCharacterMovement())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-	}
 
 	if (uAnimInstance)
 	{
@@ -287,12 +287,6 @@ void APlayableCharacter::OnSwitchToSprintingState()
 {
 	bHasTargetRotation = false;
 
-	if (GetCharacterMovement() != nullptr)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = JogSpeed * DefaultSprintMultiplier;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-	}
-
 	if (uAnimInstance)
 	{
 		uAnimInstance->IsSprinting = true;
@@ -301,14 +295,6 @@ void APlayableCharacter::OnSwitchToSprintingState()
 
 void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
 {
-	if (GetCharacterMovement() != nullptr)
-	{
-		GetCharacterMovement()->MaxFlySpeed = JogSpeed;
-		GetCharacterMovement()->Velocity.Z = 0.0f;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-	}
-
 	if (uAnimInstance)
 	{
 		uAnimInstance->IsSprinting = false;
@@ -335,13 +321,6 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
 
 void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
 {
-	if (GetCharacterMovement() != nullptr)
-	{
-		GetCharacterMovement()->MaxFlySpeed = MaxFlightForwardSpeed;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-	}
-
 	if (uAnimInstance)
 	{
 		uAnimInstance->IsSprinting = false;
@@ -390,7 +369,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(FlightStrafeAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnFlightStrafeInput);
 		EnhancedInputComponent->BindAction(FlightForwardAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnFlightForwardInput);
 	}
-	else if(GEngine != nullptr)
+	else if (GEngine != nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, TEXT("APlayableCharacter requires an Enhanced Input Component!"));
 	}

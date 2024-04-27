@@ -59,10 +59,12 @@ void UPlayerCameraComponent::OnPlayerStateChanged(ControlState State)
 		case ControlState::Sprinting:
 			SetTargetFOV(DefaultFOV);
 			break;
+
 		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
 		case ControlState::TravelPower_Flight_Forward:
 			SetTargetFOV(FlightFOV);
 			break;
+
 		default:
 			WARN_IF_MSG(true, "ControlState case not handled!");
 			break;
