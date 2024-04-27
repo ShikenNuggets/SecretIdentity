@@ -19,6 +19,7 @@ class UPlayCharacterMovementComponent;
 class USpringArmComponent;
 class UUserWidget;
 
+class UMusicPlayer;
 class UPlayerCameraBoom;
 class UPlayerCameraComponent;
 
@@ -135,11 +136,8 @@ private:
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Music -----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UAudioComponent* CalmFlyingMusicComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UAudioComponent* HeavyFlyingMusicComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
+	UMusicPlayer* MusicPlayer;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Cape -----------------------------------------------------------------------//

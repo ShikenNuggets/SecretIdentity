@@ -18,7 +18,7 @@
 #include "PlayerCameraBoom.h"
 #include "PlayerCameraComponent.h"
 #include "PlayCharacterMovementComponent.h"
-#include "MusicAudioComponent.h"
+#include "MusicPlayer.h"
 #include "UE_Helpers.h"
 
 // Sets default values
@@ -61,8 +61,11 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 		}
 	}
 
-	CalmFlyingMusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("CalmFlyingMusic"));
-	HeavyFlyingMusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeavyFlyingMusic"));
+	MusicPlayer = CreateDefaultSubobject<UMusicPlayer>(TEXT("MusicPlayer"));
+	if (MusicPlayer != nullptr)
+	{
+		MusicPlayer->SetupAttachment(MusicPlayer);
+	}
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -85,16 +88,6 @@ void APlayableCharacter::BeginPlay()
 	if (GetMesh())
 	{
 		uAnimInstance = Cast<UPlayableAnimInstance>(GetMesh()->GetAnimInstance());
-	}
-
-	if (CalmFlyingMusicComponent)
-	{
-		CalmFlyingMusicComponent->Stop();
-	}
-
-	if (HeavyFlyingMusicComponent)
-	{
-		HeavyFlyingMusicComponent->Stop();
 	}
 
 	FVector windSourcePos = FVector(100.0f, 0.0f, 0.0f);
@@ -134,8 +127,7 @@ void APlayableCharacter::BeginPlay()
 	WARN_IF_NULL(CameraBoom);
 	WARN_IF_NULL(FollowCamera);
 
-	WARN_IF_NULL(CalmFlyingMusicComponent);
-	WARN_IF_NULL(HeavyFlyingMusicComponent);
+	WARN_IF_NULL(MusicPlayer);
 
 	WARN_IF_NULL(WindSource);
 
@@ -238,6 +230,11 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 	{
 		uMovementComponent->OnPlayerStateChanged(NewState);
 	}
+
+	if (MusicPlayer != nullptr)
+	{
+		MusicPlayer->OnPlayerStateChanged(NewState);
+	}
 }
 
 bool APlayableCharacter::IsStateSwitchValid(ControlState OldState, ControlState NewState)
@@ -271,16 +268,6 @@ void APlayableCharacter::OnSwitchToDefaultState()
 		uInputSubsystem->RemoveMappingContext(FlightMappingContext);
 		uInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
-
-	if (CalmFlyingMusicComponent != nullptr)
-	{
-		CalmFlyingMusicComponent->FadeOut(1.0f, 0.0f);
-	}
-
-	if (HeavyFlyingMusicComponent != nullptr)
-	{
-		HeavyFlyingMusicComponent->FadeOut(1.0f, 0.0f);
-	}
 }
 
 void APlayableCharacter::OnSwitchToSprintingState()
@@ -306,17 +293,6 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
 		uInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		uInputSubsystem->AddMappingContext(FlightMappingContext, 0);
 	}
-
-	if (HeavyFlyingMusicComponent != nullptr)
-	{
-		HeavyFlyingMusicComponent->FadeOut(1.0f, 0.0f);
-	}
-
-	if (CalmFlyingMusicComponent != nullptr)
-	{
-		CalmFlyingMusicComponent->Stop();
-		CalmFlyingMusicComponent->FadeIn(1.0f);
-	}
 }
 
 void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
@@ -330,17 +306,6 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
 	{
 		uInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		uInputSubsystem->AddMappingContext(FlightMappingContext, 0);
-	}
-
-	if (CalmFlyingMusicComponent != nullptr)
-	{
-		CalmFlyingMusicComponent->FadeOut(1.0f, 0.0f);
-	}
-
-	if (HeavyFlyingMusicComponent != nullptr)
-	{
-		HeavyFlyingMusicComponent->Stop();
-		HeavyFlyingMusicComponent->FadeIn(1.0f);
 	}
 }
 

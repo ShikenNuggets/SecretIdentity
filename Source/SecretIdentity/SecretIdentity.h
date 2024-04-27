@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 
+UENUM()
 enum class ControlState : uint8
 {
 	Default = 0,
 	Sprinting,
 	TravelPower_Flight_Strafe,
-	TravelPower_Flight_Forward
+	TravelPower_Flight_Forward,
+
+	Count UMETA(Hidden)
 };
