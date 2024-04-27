@@ -14,3 +14,5 @@ enum class EPlayerControlState : uint8
 
 	Count UMETA(Hidden)
 };
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerControlStateDelegate, EPlayerControlState);

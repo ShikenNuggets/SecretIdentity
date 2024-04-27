@@ -25,6 +25,9 @@
 APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+
 	if (GetCapsuleComponent() != nullptr)
 	{
 		GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
@@ -46,6 +49,7 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 		options.FlightForwardRotationTime = FlightForwardRotationTime;
 
 		uMovementComponent->SetOptions(options);
+		OnPlayerStateChangedDelegate.AddUObject(uMovementComponent, &UPlayCharacterMovementComponent::OnPlayerStateChanged);
 	}
 
 	CameraBoom = CreateDefaultSubobject<UPlayerCameraBoom>(TEXT("CameraBoom"));
@@ -53,11 +57,13 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	{
 		CameraBoom->SetupAttachment(RootComponent);
 		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 40.0f)); //Camera should target the shoulders rather than the back
+		OnPlayerStateChangedDelegate.AddUObject(CameraBoom, &UPlayerCameraBoom::OnPlayerStateChanged);
 
 		FollowCamera = CreateDefaultSubobject<UPlayerCameraComponent>(TEXT("FollowCamera"));
 		if (FollowCamera != nullptr)
 		{
 			FollowCamera->SetupAttachment(CameraBoom, UPlayerCameraBoom::SocketName);
+			OnPlayerStateChangedDelegate.AddUObject(FollowCamera, &UPlayerCameraComponent::OnPlayerStateChanged);
 		}
 	}
 
@@ -65,10 +71,8 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	if (MusicPlayer != nullptr)
 	{
 		MusicPlayer->SetupAttachment(MusicPlayer);
+		OnPlayerStateChangedDelegate.AddUObject(MusicPlayer, &UMusicPlayer::OnPlayerStateChanged);
 	}
-
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -215,26 +219,7 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 			break;
 	}
 
-	//TODO - These would be a good candidate for delegates
-	if (CameraBoom != nullptr)
-	{
-		CameraBoom->OnPlayerStateChanged(NewState);
-	}
-
-	if (FollowCamera != nullptr)
-	{
-		FollowCamera->OnPlayerStateChanged(NewState);
-	}
-
-	if (uMovementComponent)
-	{
-		uMovementComponent->OnPlayerStateChanged(NewState);
-	}
-
-	if (MusicPlayer != nullptr)
-	{
-		MusicPlayer->OnPlayerStateChanged(NewState);
-	}
+	OnPlayerStateChangedDelegate.Broadcast(NewState);
 }
 
 bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState)

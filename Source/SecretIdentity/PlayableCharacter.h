@@ -148,6 +148,8 @@ private:
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
+	FPlayerControlStateDelegate OnPlayerStateChangedDelegate;
+
 	UPlayCharacterMovementComponent* uMovementComponent;
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;

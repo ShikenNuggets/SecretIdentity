@@ -99,8 +99,4 @@ void UMusicPlayer::StartCrossFade(USoundBase* NextSong, float Duration, EAudioFa
 	{
 		NextMusicComponent->FadeIn(Duration, 1.0f, 0.0f, Curve);
 	}
-	else
-	{
-		LOG_MSG(TEXT("Test2"));
-	}
 }
