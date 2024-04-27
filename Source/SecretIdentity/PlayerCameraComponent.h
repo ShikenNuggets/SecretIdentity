@@ -20,7 +20,7 @@ public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void OnPlayerStateChanged(ControlState State);
+	void OnPlayerStateChanged(EPlayerControlState State);
 
 protected:
 	virtual void BeginPlay() override;

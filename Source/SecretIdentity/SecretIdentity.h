@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 
 UENUM()
-enum class ControlState : uint8
+enum class EPlayerControlState : uint8
 {
 	Default = 0,
 	Sprinting,

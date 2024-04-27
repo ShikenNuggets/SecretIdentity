@@ -30,7 +30,7 @@ public:
 	UPlayCharacterMovementComponent();
 
 	void SetOptions(const FPlayCharacterMovementOptions& Options);
-	void OnPlayerStateChanged(ControlState State);
+	void OnPlayerStateChanged(EPlayerControlState State);
 
 private:
 	FPlayCharacterMovementOptions fOptions;

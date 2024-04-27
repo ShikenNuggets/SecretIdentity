@@ -52,22 +52,22 @@ void UPlayerCameraBoom::SetTargetFollowDistance(float Target)
 	fTimer = 0.0f;
 }
 
-void UPlayerCameraBoom::OnPlayerStateChanged(ControlState State)
+void UPlayerCameraBoom::OnPlayerStateChanged(EPlayerControlState State)
 {
 	switch (State)
 	{
-		case ControlState::Default: //Intentional fallthrough
-		case ControlState::Sprinting:
+		case EPlayerControlState::Default: //Intentional fallthrough
+		case EPlayerControlState::Sprinting:
 			SetTargetFollowDistance(DefaultFollowDistance);
 			break;
 
-		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
-		case ControlState::TravelPower_Flight_Forward:
+		case EPlayerControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
+		case EPlayerControlState::TravelPower_Flight_Forward:
 			SetTargetFollowDistance(FlightFollowDistance);
 			break;
 
 		default:
-			WARN_IF_MSG(true, "ControlState case not handled in UPlayerCameraBoom::OnPlayerStateChanged!");
+			WARN_IF_MSG(true, "EPlayerControlState case not handled in UPlayerCameraBoom::OnPlayerStateChanged!");
 			break;
 	}
 }

@@ -51,22 +51,22 @@ void UPlayerCameraComponent::SetTargetFOV(float Target)
 	fTimer = 0.0f;
 }
 
-void UPlayerCameraComponent::OnPlayerStateChanged(ControlState State)
+void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
 {
 	switch (State)
 	{
-		case ControlState::Default: //Intentional fallthrough
-		case ControlState::Sprinting:
+		case EPlayerControlState::Default: //Intentional fallthrough
+		case EPlayerControlState::Sprinting:
 			SetTargetFOV(DefaultFOV);
 			break;
 
-		case ControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
-		case ControlState::TravelPower_Flight_Forward:
+		case EPlayerControlState::TravelPower_Flight_Strafe: //Intentional fallthrough
+		case EPlayerControlState::TravelPower_Flight_Forward:
 			SetTargetFOV(FlightFOV);
 			break;
 
 		default:
-			WARN_IF_MSG(true, "ControlState case not handled!");
+			WARN_IF_MSG(true, "EPlayerControlState case not handled!");
 			break;
 	}
 }

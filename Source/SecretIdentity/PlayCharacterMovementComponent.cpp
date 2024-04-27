@@ -27,29 +27,29 @@ void UPlayCharacterMovementComponent::SetOptions(const FPlayCharacterMovementOpt
 	MaxWalkSpeed = fOptions.JogSpeed;
 }
 
-void UPlayCharacterMovementComponent::OnPlayerStateChanged(ControlState State)
+void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState State)
 {
 	switch (State)
 	{
-		case ControlState::Default:
+		case EPlayerControlState::Default:
 			MaxWalkSpeed = fOptions.JogSpeed;
 			bOrientRotationToMovement = true;
 			SetMovementMode(EMovementMode::MOVE_Falling);
 			break;
 
-		case ControlState::Sprinting:
+		case EPlayerControlState::Sprinting:
 			MaxWalkSpeed = fOptions.JogSpeed * fOptions.DefaultSprintMultiplier;
 			bOrientRotationToMovement = true;
 			break;
 
-		case ControlState::TravelPower_Flight_Strafe:
+		case EPlayerControlState::TravelPower_Flight_Strafe:
 			MaxFlySpeed = fOptions.JogSpeed;
 			Velocity.Z = 0.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;
 
-		case ControlState::TravelPower_Flight_Forward:
+		case EPlayerControlState::TravelPower_Flight_Forward:
 			MaxFlySpeed = fOptions.MaxFlightForwardSpeed;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);

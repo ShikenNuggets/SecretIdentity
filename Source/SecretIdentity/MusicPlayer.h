@@ -18,7 +18,7 @@ public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void OnPlayerStateChanged(ControlState State);
+	void OnPlayerStateChanged(EPlayerControlState State);
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,6 +38,6 @@ private:
 	UPROPERTY()
 	UAudioComponent* NextMusicComponent;
 
-	TStaticArray<USoundBase*, static_cast<uint32>(ControlState::Count)> tSongs;
+	TStaticArray<USoundBase*, static_cast<uint32>(EPlayerControlState::Count)> tSongs;
 	bool bIsCrossFading = false;
 };

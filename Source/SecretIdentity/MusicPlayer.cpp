@@ -34,8 +34,8 @@ void UMusicPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	tSongs[static_cast<uint32>(ControlState::TravelPower_Flight_Strafe)] = CalmFlyingMusic;
-	tSongs[static_cast<uint32>(ControlState::TravelPower_Flight_Forward)] = HeavyFlyingMusic;
+	tSongs[static_cast<uint32>(EPlayerControlState::TravelPower_Flight_Strafe)] = CalmFlyingMusic;
+	tSongs[static_cast<uint32>(EPlayerControlState::TravelPower_Flight_Forward)] = HeavyFlyingMusic;
 
 	if (CurrentMusicComponent != nullptr)
 	{
@@ -62,17 +62,17 @@ void UMusicPlayer::TickComponent(float DeltaTime, enum ELevelTick TickType, FAct
 	}
 }
 
-void UMusicPlayer::OnPlayerStateChanged(ControlState State)
+void UMusicPlayer::OnPlayerStateChanged(EPlayerControlState State)
 {
-	WARN_IF(State >= ControlState::Count);
+	WARN_IF(State >= EPlayerControlState::Count);
 
-	if (State < ControlState::Count && static_cast<int32>(State) < tSongs.Num())
+	if (State < EPlayerControlState::Count && static_cast<int32>(State) < tSongs.Num())
 	{
 		StartCrossFade(tSongs[static_cast<uint32>(State)]);
 	}
 	else
 	{
-		WARN_IF_MSG(true, "ControlState case not handled in UMusicPlayer::OnPlayerStateChanged!");
+		WARN_IF_MSG(true, "EPlayerControlState case not handled in UMusicPlayer::OnPlayerStateChanged!");
 	}
 }
 

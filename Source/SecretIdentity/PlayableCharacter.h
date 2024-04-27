@@ -43,8 +43,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	// States
-	void SwitchState(ControlState NewState);
-	bool IsStateSwitchValid(ControlState OldState, ControlState NewState);
+	void SwitchState(EPlayerControlState NewState);
+	bool IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState);
 
 	void OnSwitchToDefaultState();
 	void OnSwitchToSprintingState();
@@ -152,7 +152,7 @@ private:
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;
 	UUserWidget* uHudWidget;
-	ControlState eControlState;
+	EPlayerControlState eControlState;
 
 	bool bHasTargetRotation;
 	FRotator fStartRotation;

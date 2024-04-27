@@ -135,7 +135,7 @@ void APlayableCharacter::BeginPlay()
 	WARN_IF_NULL(uAnimInstance);
 	WARN_IF_NULL(uInputSubsystem);
 
-	SwitchState(ControlState::Default);
+	SwitchState(EPlayerControlState::Default);
 }
 
 // Called every frame
@@ -143,7 +143,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (eControlState == ControlState::TravelPower_Flight_Forward)
+	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 	{
 		float velocityMagnitude = GetCharacterMovement()->Velocity.Size();
 
@@ -154,7 +154,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 
 		if (FMath::IsNearlyZero(velocityMagnitude, 1.0f))
 		{
-			SwitchState(ControlState::TravelPower_Flight_Strafe);
+			SwitchState(EPlayerControlState::TravelPower_Flight_Strafe);
 		}
 	}
 
@@ -163,7 +163,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 		fRotationTimer += DeltaTime;
 
 		float fRotationChangeTime = FlightStrafeRotationTime;
-		if (eControlState == ControlState::TravelPower_Flight_Forward)
+		if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 		{
 			fRotationChangeTime = FlightForwardRotationTime;
 		}
@@ -179,7 +179,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 	}
 }
 
-void APlayableCharacter::SwitchState(ControlState NewState)
+void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 {
 	if (!IsStateSwitchValid(eControlState, NewState))
 	{
@@ -190,22 +190,22 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 
 	switch (eControlState)
 	{
-		case ControlState::Default:
+		case EPlayerControlState::Default:
 			//LOG_MSG("Switching to default state");
 			OnSwitchToDefaultState();
 			break;
 
-		case ControlState::Sprinting:
+		case EPlayerControlState::Sprinting:
 			//LOG_MSG("Switching to sprinting state");
 			OnSwitchToSprintingState();
 			break;
 
-		case ControlState::TravelPower_Flight_Strafe:
+		case EPlayerControlState::TravelPower_Flight_Strafe:
 			//LOG_MSG("Switching to flight strafing state");
 			OnSwitchToTravelPowerFlightStrafeState();
 			break;
 
-		case ControlState::TravelPower_Flight_Forward:
+		case EPlayerControlState::TravelPower_Flight_Forward:
 			//LOG_MSG("Switching to flying forward state");
 			OnSwitchToTravelPowerFlightForwardState();
 			break;
@@ -237,16 +237,16 @@ void APlayableCharacter::SwitchState(ControlState NewState)
 	}
 }
 
-bool APlayableCharacter::IsStateSwitchValid(ControlState OldState, ControlState NewState)
+bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState)
 {
 	//Cannot start sprinting while flying
-	if ((OldState == ControlState::TravelPower_Flight_Strafe || OldState == ControlState::TravelPower_Flight_Forward) && NewState == ControlState::Sprinting)
+	if ((OldState == EPlayerControlState::TravelPower_Flight_Strafe || OldState == EPlayerControlState::TravelPower_Flight_Forward) && NewState == EPlayerControlState::Sprinting)
 	{
 		return false;
 	}
 
 	//Must move from flight strafe to flight forward, cannot move from other states directly to flying forward
-	if (OldState != ControlState::TravelPower_Flight_Strafe && NewState == ControlState::TravelPower_Flight_Forward)
+	if (OldState != EPlayerControlState::TravelPower_Flight_Strafe && NewState == EPlayerControlState::TravelPower_Flight_Forward)
 	{
 		return false;
 	}
@@ -344,7 +344,7 @@ void APlayableCharacter::OnLookInput(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (eControlState == ControlState::TravelPower_Flight_Forward)
+	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 	{
 		LookAxisVector.X /= 4.0f;
 		LookAxisVector.Y /= 4.0f;
@@ -377,32 +377,32 @@ void APlayableCharacter::OnMoveInput(const FInputActionValue& Value)
 void APlayableCharacter::OnSprintInput(const FInputActionValue& Value)
 {
 	bool isSprinting = Value.Get<bool>();
-	if (isSprinting && eControlState != ControlState::Sprinting)
+	if (isSprinting && eControlState != EPlayerControlState::Sprinting)
 	{
-		SwitchState(ControlState::Sprinting);
+		SwitchState(EPlayerControlState::Sprinting);
 	}
-	else if (!isSprinting && eControlState == ControlState::Sprinting)
+	else if (!isSprinting && eControlState == EPlayerControlState::Sprinting)
 	{
-		SwitchState(ControlState::Default);
+		SwitchState(EPlayerControlState::Default);
 	}
 }
 
 void APlayableCharacter::OnEnableTravelPowerInput(const FInputActionValue& Value)
 {
-	if (eControlState == ControlState::TravelPower_Flight_Strafe || eControlState == ControlState::TravelPower_Flight_Forward)
+	if (eControlState == EPlayerControlState::TravelPower_Flight_Strafe || eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 	{
-		SwitchState(ControlState::Default);
+		SwitchState(EPlayerControlState::Default);
 	}
 	else
 	{
-		SwitchState(ControlState::TravelPower_Flight_Strafe);
+		SwitchState(EPlayerControlState::TravelPower_Flight_Strafe);
 	}
 }
 
 void APlayableCharacter::OnFlightStrafeInput(const FInputActionValue& Value)
 {
 	// Can only strafe while already in the strafe state
-	if (eControlState != ControlState::TravelPower_Flight_Strafe)
+	if (eControlState != EPlayerControlState::TravelPower_Flight_Strafe)
 	{
 		return;
 	}
@@ -427,13 +427,13 @@ void APlayableCharacter::OnFlightForwardInput(const FInputActionValue& Value)
 {
 	float moveValue = FMath::Clamp(Value.Get<float>(), 0.0f, 1.0f);
 
-	if (moveValue > 0.1f && eControlState != ControlState::TravelPower_Flight_Forward)
+	if (moveValue > 0.1f && eControlState != EPlayerControlState::TravelPower_Flight_Forward)
 	{
-		SwitchState(ControlState::TravelPower_Flight_Forward);
+		SwitchState(EPlayerControlState::TravelPower_Flight_Forward);
 	}
 	else if (moveValue <= 0.1f)
 	{
-		SwitchState(ControlState::TravelPower_Flight_Strafe);
+		SwitchState(EPlayerControlState::TravelPower_Flight_Strafe);
 		return;
 	}
 
