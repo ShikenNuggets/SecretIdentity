@@ -92,6 +92,12 @@ void APlayableCharacter::BeginPlay()
 	if (GetMesh())
 	{
 		uAnimInstance = Cast<UPlayableAnimInstance>(GetMesh()->GetAnimInstance());
+		if (uAnimInstance != nullptr)
+		{
+			uAnimInstance->OnTriggerEnableHandCollision.AddUObject(this, &APlayableCharacter::OnAnimNotifyTriggerEnableHandCollision);
+			uAnimInstance->OnTriggerDisableHandCollision.AddUObject(this, &APlayableCharacter::OnAnimNotifyTriggerDisableHandCollision);
+			uAnimInstance->OnTriggerEndPunching.AddUObject(this, &APlayableCharacter::OnAnimNotifyTriggerEndPunching);
+		}
 	}
 
 	FVector windSourcePos = FVector(100.0f, 0.0f, 0.0f);
@@ -183,16 +189,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 			fRotationTimer = 0.0f;
 		}
 	}
-
-	if (eControlState == EPlayerControlState::Punching)
-	{
-		fDelayStateSwitchTimer -= DeltaTime;
-		if (fDelayStateSwitchTimer <= 0.0f)
-		{
-			SwitchState(EPlayerControlState::Default);
-			fDelayStateSwitchTimer = 0.0f;
-		}
-	}
 }
 
 void APlayableCharacter::SwitchState(EPlayerControlState NewState)
@@ -236,6 +232,12 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 
 bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState)
 {
+	if (NewState >= EPlayerControlState::Count)
+	{
+		WARN_IF_MSG(true, "Tried to switch player to invalid state!");
+		return false;
+	}
+
 	//Cannot start sprinting while flying
 	if ((OldState == EPlayerControlState::TravelPower_Flight_Strafe || OldState == EPlayerControlState::TravelPower_Flight_Forward) && NewState == EPlayerControlState::Sprinting)
 	{
@@ -475,7 +477,6 @@ void APlayableCharacter::OnPunchInput(const FInputActionValue& Value)
 	if (punchButtonDown)
 	{
 		SwitchState(EPlayerControlState::Punching);
-		fDelayStateSwitchTimer = 1.05f;
 	}
 }
 
@@ -490,4 +491,17 @@ void APlayableCharacter::SetTargetRotation(const FRotator& Target)
 	fStartRotation = GetActorRotation();
 	fTargetRotation = Target;
 	fRotationTimer = 0.0f;
+}
+
+void APlayableCharacter::OnAnimNotifyTriggerEnableHandCollision()
+{
+}
+
+void APlayableCharacter::OnAnimNotifyTriggerDisableHandCollision()
+{
+}
+
+void APlayableCharacter::OnAnimNotifyTriggerEndPunching()
+{
+	SwitchState(EPlayerControlState::Default);
 }

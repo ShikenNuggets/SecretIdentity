@@ -171,7 +171,10 @@ private:
 	FRotator fTargetRotation;
 	float fRotationTimer;
 
-	float fDelayStateSwitchTimer;
-
 	void SetTargetRotation(const FRotator& Target);
+
+public:
+	void OnAnimNotifyTriggerEnableHandCollision();
+	void OnAnimNotifyTriggerDisableHandCollision();
+	void OnAnimNotifyTriggerEndPunching();
 };
