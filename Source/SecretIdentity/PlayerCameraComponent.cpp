@@ -57,6 +57,7 @@ void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
 	{
 		case EPlayerControlState::Default: //Intentional fallthrough
 		case EPlayerControlState::Sprinting:
+		case EPlayerControlState::Punching:
 			SetTargetFOV(DefaultFOV);
 			break;
 
@@ -66,7 +67,7 @@ void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
 			break;
 
 		default:
-			WARN_IF_MSG(true, "EPlayerControlState case not handled!");
+			WARN_IF_MSG(true, "EPlayerControlState case not handled in UPlayerCameraComponent::OnPlayerStateChanged!");
 			break;
 	}
 }

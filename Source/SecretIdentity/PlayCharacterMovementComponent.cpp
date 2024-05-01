@@ -34,12 +34,18 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 		case EPlayerControlState::Default:
 			MaxWalkSpeed = fOptions.JogSpeed;
 			bOrientRotationToMovement = true;
-			SetMovementMode(EMovementMode::MOVE_Falling);
+			SetMovementMode(EMovementMode::MOVE_Walking);
 			break;
 
 		case EPlayerControlState::Sprinting:
 			MaxWalkSpeed = fOptions.JogSpeed * fOptions.DefaultSprintMultiplier;
 			bOrientRotationToMovement = true;
+			break;
+
+		case EPlayerControlState::Punching:
+			MaxWalkSpeed = fOptions.JogSpeed;
+			bOrientRotationToMovement = true;
+			SetMovementMode(EMovementMode::MOVE_None);
 			break;
 
 		case EPlayerControlState::TravelPower_Flight_Strafe:
@@ -56,6 +62,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 			break;
 
 		default:
+			WARN_IF_MSG(true, "EPlayerControlState case not handled in UPlayCharacterMovementComponent::OnPlayerStateChanged!");
 			break;
 	}
 }

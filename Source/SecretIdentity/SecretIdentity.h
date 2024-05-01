@@ -9,6 +9,7 @@ enum class EPlayerControlState : uint8
 {
 	Default = 0,
 	Sprinting,
+	Punching,
 	TravelPower_Flight_Strafe,
 	TravelPower_Flight_Forward,
 

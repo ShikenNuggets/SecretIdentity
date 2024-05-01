@@ -48,6 +48,7 @@ protected:
 
 	void OnSwitchToDefaultState();
 	void OnSwitchToSprintingState();
+	void OnSwitchToPunchState();
 	void OnSwitchToTravelPowerFlightStrafeState();
 	void OnSwitchToTravelPowerFlightForwardState();
 
@@ -60,6 +61,9 @@ protected:
 	// Flight Input
 	void OnFlightStrafeInput(const FInputActionValue& Value);
 	void OnFlightForwardInput(const FInputActionValue& Value);
+
+	// Combat Input
+	void OnPunchInput(const FInputActionValue& Value);
 
 private:
 	//-----------------------------------------------------------------------------------------------------//
@@ -125,6 +129,12 @@ private:
 	UInputAction* FlightForwardAction;
 
 	//-----------------------------------------------------------------------------------------------------//
+	//----------------------- Combat Input ----------------------------------------------------------------//
+	//-----------------------------------------------------------------------------------------------------//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Combat)", meta = (AllowPrivateAccess = "true"))
+	UInputAction* PunchAction;
+
+	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Camera ----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -160,6 +170,8 @@ private:
 	FRotator fStartRotation;
 	FRotator fTargetRotation;
 	float fRotationTimer;
+
+	float fDelayStateSwitchTimer;
 
 	void SetTargetRotation(const FRotator& Target);
 };

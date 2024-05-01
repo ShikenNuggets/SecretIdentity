@@ -128,6 +128,8 @@ void APlayableCharacter::BeginPlay()
 	WARN_IF_NULL(FlightStrafeAction);
 	WARN_IF_NULL(FlightForwardAction);
 
+	WARN_IF_NULL(PunchAction);
+
 	WARN_IF_NULL(CameraBoom);
 	WARN_IF_NULL(FollowCamera);
 
@@ -181,6 +183,16 @@ void APlayableCharacter::Tick(float DeltaTime)
 			fRotationTimer = 0.0f;
 		}
 	}
+
+	if (eControlState == EPlayerControlState::Punching)
+	{
+		fDelayStateSwitchTimer -= DeltaTime;
+		if (fDelayStateSwitchTimer <= 0.0f)
+		{
+			SwitchState(EPlayerControlState::Default);
+			fDelayStateSwitchTimer = 0.0f;
+		}
+	}
 }
 
 void APlayableCharacter::SwitchState(EPlayerControlState NewState)
@@ -195,22 +207,22 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 	switch (eControlState)
 	{
 		case EPlayerControlState::Default:
-			//LOG_MSG("Switching to default state");
 			OnSwitchToDefaultState();
 			break;
 
 		case EPlayerControlState::Sprinting:
-			//LOG_MSG("Switching to sprinting state");
 			OnSwitchToSprintingState();
 			break;
 
+		case EPlayerControlState::Punching:
+			OnSwitchToPunchState();
+			break;
+
 		case EPlayerControlState::TravelPower_Flight_Strafe:
-			//LOG_MSG("Switching to flight strafing state");
 			OnSwitchToTravelPowerFlightStrafeState();
 			break;
 
 		case EPlayerControlState::TravelPower_Flight_Forward:
-			//LOG_MSG("Switching to flying forward state");
 			OnSwitchToTravelPowerFlightForwardState();
 			break;
 
@@ -226,6 +238,18 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 {
 	//Cannot start sprinting while flying
 	if ((OldState == EPlayerControlState::TravelPower_Flight_Strafe || OldState == EPlayerControlState::TravelPower_Flight_Forward) && NewState == EPlayerControlState::Sprinting)
+	{
+		return false;
+	}
+	
+	//Cannot punch in mid-air
+	if (NewState == EPlayerControlState::Punching && (GetCharacterMovement()->IsFlying() || GetCharacterMovement()->IsFalling()))
+	{
+		return false;
+	}
+
+	//Cannot start punching while flying
+	if ((OldState == EPlayerControlState::TravelPower_Flight_Strafe || OldState == EPlayerControlState::TravelPower_Flight_Forward) && NewState == EPlayerControlState::Punching)
 	{
 		return false;
 	}
@@ -246,6 +270,7 @@ void APlayableCharacter::OnSwitchToDefaultState()
 	if (uAnimInstance)
 	{
 		uAnimInstance->IsSprinting = false;
+		uAnimInstance->IsPunching = false;
 	}
 
 	if (uInputSubsystem)
@@ -262,6 +287,17 @@ void APlayableCharacter::OnSwitchToSprintingState()
 	if (uAnimInstance)
 	{
 		uAnimInstance->IsSprinting = true;
+	}
+}
+
+void APlayableCharacter::OnSwitchToPunchState()
+{
+	bHasTargetRotation = false;
+
+	if (uAnimInstance)
+	{
+		uAnimInstance->IsSprinting = false;
+		uAnimInstance->IsPunching = true;
 	}
 }
 
@@ -318,6 +354,9 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		//Flight
 		EnhancedInputComponent->BindAction(FlightStrafeAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnFlightStrafeInput);
 		EnhancedInputComponent->BindAction(FlightForwardAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnFlightForwardInput);
+
+		//Combat
+		EnhancedInputComponent->BindAction(PunchAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnPunchInput);
 	}
 	else if (GEngine != nullptr)
 	{
@@ -427,6 +466,17 @@ void APlayableCharacter::OnFlightForwardInput(const FInputActionValue& Value)
 
 	AddMovementInput(ForwardDirection, moveValue);
 	SetTargetRotation(Rotation);
+}
+
+void APlayableCharacter::OnPunchInput(const FInputActionValue& Value)
+{
+	bool punchButtonDown = Value.Get<bool>();
+
+	if (punchButtonDown)
+	{
+		SwitchState(EPlayerControlState::Punching);
+		fDelayStateSwitchTimer = 1.05f;
+	}
 }
 
 void APlayableCharacter::SetTargetRotation(const FRotator& Target)

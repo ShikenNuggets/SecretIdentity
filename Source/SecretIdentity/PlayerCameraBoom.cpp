@@ -58,6 +58,7 @@ void UPlayerCameraBoom::OnPlayerStateChanged(EPlayerControlState State)
 	{
 		case EPlayerControlState::Default: //Intentional fallthrough
 		case EPlayerControlState::Sprinting:
+		case EPlayerControlState::Punching:
 			SetTargetFollowDistance(DefaultFollowDistance);
 			break;
 
