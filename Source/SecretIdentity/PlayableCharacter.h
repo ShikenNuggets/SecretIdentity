@@ -8,6 +8,7 @@
 #include "PlayableCharacter.generated.h"
 
 struct FInputActionValue;
+class ACombatFieldSystemActor;
 class AWindDirectionalSource;
 class UCameraComponent;
 class UEnhancedInputLocalPlayerSubsystem;
@@ -16,6 +17,7 @@ class UInputAction;
 class UMusicAudioComponent;
 class UPlayableAnimInstance;
 class UPlayCharacterMovementComponent;
+class USphereComponent;
 class USpringArmComponent;
 class UUserWidget;
 
@@ -44,7 +46,7 @@ protected:
 
 	// States
 	void SwitchState(EPlayerControlState NewState);
-	bool IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState);
+	bool IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState) const;
 
 	void OnSwitchToDefaultState();
 	void OnSwitchToSprintingState();
@@ -156,6 +158,18 @@ private:
 	AWindDirectionalSource* WindSource;
 
 	//-----------------------------------------------------------------------------------------------------//
+	//----------------------- Combat ----------------------------------------------------------------------//
+	//-----------------------------------------------------------------------------------------------------//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ACombatFieldSystemActor> FieldSystemActorBP;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	USphereComponent* RightHandCollider;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	ACombatFieldSystemActor* RightHandFieldSystem;
+
+	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	FPlayerControlStateDelegate OnPlayerStateChangedDelegate;
@@ -163,7 +177,6 @@ private:
 	UPlayCharacterMovementComponent* uMovementComponent;
 	UPlayableAnimInstance* uAnimInstance;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;
-	UUserWidget* uHudWidget;
 	EPlayerControlState eControlState;
 
 	bool bHasTargetRotation;

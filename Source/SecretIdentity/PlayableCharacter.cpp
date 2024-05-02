@@ -6,7 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WindDirectionalSourceComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/WindDirectionalSource.h"
+#include "Field/FieldSystemActor.h"
+#include "Field/FieldSystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -14,6 +17,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "CombatFieldSystemActor.h"
 #include "PlayableAnimInstance.h"
 #include "PlayerCameraBoom.h"
 #include "PlayerCameraComponent.h"
@@ -73,6 +77,17 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 		MusicPlayer->SetupAttachment(MusicPlayer);
 		OnPlayerStateChangedDelegate.AddUObject(MusicPlayer, &UMusicPlayer::OnPlayerStateChanged);
 	}
+
+	if (GetMesh())
+	{
+		RightHandCollider = CreateDefaultSubobject<USphereComponent>(TEXT("RightHandCollider"));
+		if (RightHandCollider != nullptr)
+		{
+			RightHandCollider->SetupAttachment(GetMesh(), TEXT("middle_03_r"));
+			RightHandCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			RightHandCollider->SetSphereRadius(12.0f);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -113,7 +128,17 @@ void APlayableCharacter::BeginPlay()
 				WindSource->GetComponent()->Speed = 7.5f;
 				WindSource->GetComponent()->Strength = 20.0f;
 			}
-			
+		}
+	}
+
+	if (FieldSystemActorBP != nullptr)
+	{
+		RightHandFieldSystem = GetWorld()->SpawnActor<ACombatFieldSystemActor>(FieldSystemActorBP, FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		if (RightHandFieldSystem != nullptr)
+		{
+			RightHandFieldSystem->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("middle_03_r"));
+			RightHandFieldSystem->SetFieldActive(true);
+			RightHandFieldSystem->DrawDebugInfo(false);
 		}
 	}
 
@@ -142,6 +167,10 @@ void APlayableCharacter::BeginPlay()
 	WARN_IF_NULL(MusicPlayer);
 
 	WARN_IF_NULL(WindSource);
+
+	WARN_IF_NULL(FieldSystemActorBP);
+	WARN_IF_NULL(RightHandCollider);
+	WARN_IF_NULL(RightHandFieldSystem);
 
 	WARN_IF_NULL(uMovementComponent);
 	WARN_IF_NULL(uAnimInstance);
@@ -230,7 +259,7 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 	OnPlayerStateChangedDelegate.Broadcast(NewState);
 }
 
-bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState)
+bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState) const
 {
 	if (NewState >= EPlayerControlState::Count)
 	{
@@ -252,6 +281,12 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 
 	//Cannot start punching while flying
 	if ((OldState == EPlayerControlState::TravelPower_Flight_Strafe || OldState == EPlayerControlState::TravelPower_Flight_Forward) && NewState == EPlayerControlState::Punching)
+	{
+		return false;
+	}
+
+	//Cannot fly while punching
+	if (OldState == EPlayerControlState::Punching && (NewState == EPlayerControlState::TravelPower_Flight_Strafe || NewState == EPlayerControlState::TravelPower_Flight_Forward))
 	{
 		return false;
 	}
@@ -280,6 +315,8 @@ void APlayableCharacter::OnSwitchToDefaultState()
 		uInputSubsystem->RemoveMappingContext(FlightMappingContext);
 		uInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
+
+	OnAnimNotifyTriggerDisableHandCollision(); //This is redundant - Just in case the punch animation gets interrupted or something
 }
 
 void APlayableCharacter::OnSwitchToSprintingState()
@@ -495,10 +532,30 @@ void APlayableCharacter::SetTargetRotation(const FRotator& Target)
 
 void APlayableCharacter::OnAnimNotifyTriggerEnableHandCollision()
 {
+	if (RightHandCollider != nullptr)
+	{
+		RightHandCollider->SetCollisionProfileName(TEXT("BlockAll"));
+	}
+
+	if (RightHandFieldSystem != nullptr)
+	{
+		RightHandFieldSystem->SetFieldActive(true);
+		RightHandFieldSystem->DrawDebugInfo(true);
+	}
 }
 
 void APlayableCharacter::OnAnimNotifyTriggerDisableHandCollision()
 {
+	if (RightHandCollider)
+	{
+		RightHandCollider->SetCollisionProfileName(TEXT("NoCollision"));
+	}
+
+	if (RightHandFieldSystem != nullptr)
+	{
+		RightHandFieldSystem->SetFieldActive(false);
+		RightHandFieldSystem->DrawDebugInfo(false);
+	}
 }
 
 void APlayableCharacter::OnAnimNotifyTriggerEndPunching()
