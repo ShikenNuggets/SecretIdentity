@@ -74,7 +74,7 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	MusicPlayer = CreateDefaultSubobject<UMusicPlayer>(TEXT("MusicPlayer"));
 	if (MusicPlayer != nullptr)
 	{
-		MusicPlayer->SetupAttachment(MusicPlayer);
+		MusicPlayer->SetupAttachment(RootComponent);
 		OnPlayerStateChangedDelegate.AddUObject(MusicPlayer, &UMusicPlayer::OnPlayerStateChanged);
 	}
 
