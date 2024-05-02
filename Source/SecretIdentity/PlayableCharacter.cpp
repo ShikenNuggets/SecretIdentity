@@ -534,7 +534,8 @@ void APlayableCharacter::OnAnimNotifyTriggerEnableHandCollision()
 {
 	if (RightHandCollider != nullptr)
 	{
-		RightHandCollider->SetCollisionProfileName(TEXT("BlockAll"));
+		RightHandCollider->SetCollisionProfileName(CollisionProfiles::OverlapAllDynamic);
+		RightHandCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 
 	if (RightHandFieldSystem != nullptr)
@@ -548,7 +549,7 @@ void APlayableCharacter::OnAnimNotifyTriggerDisableHandCollision()
 {
 	if (RightHandCollider)
 	{
-		RightHandCollider->SetCollisionProfileName(TEXT("NoCollision"));
+		RightHandCollider->SetCollisionProfileName(CollisionProfiles::NoCollision);
 	}
 
 	if (RightHandFieldSystem != nullptr)
