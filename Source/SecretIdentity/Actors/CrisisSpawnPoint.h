@@ -24,10 +24,15 @@ class SECRETIDENTITY_API ACrisisSpawnPoint : public AInfo
 public:
 	ACrisisSpawnPoint();
 
+	bool IsCrisisActive() const;
+	void SpawnCrisis();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	CrisisType TypeToSpawn = CrisisType::ThugAttack;
+
+	bool bIsCrisisActive = false;
 };
