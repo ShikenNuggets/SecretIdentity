@@ -31,7 +31,8 @@ public:
 	bool IsCrisisActive() const;
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
-	void OnCrisisActorDestroyed(AActor* ActorDestroyed);
+	UFUNCTION()
+	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason);
 
 protected:
 	virtual void BeginPlay() override;

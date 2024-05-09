@@ -72,4 +72,6 @@ void AEnemyCharacter::OnDeath()
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCapsuleComponent()->Deactivate();
 	}
+
+	SetLifeSpan(15.0f);
 }

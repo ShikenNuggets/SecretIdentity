@@ -40,7 +40,7 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	if (ThugCharacter != nullptr)
 	{
 		LOG_MSG(TEXT("Spawned crisis of type ") + FString::FromInt(static_cast<int32>(TypeToSpawn)));
-		ThugCharacter->OnDestroyed.AddDynamic(this, &ACrisisSpawnPoint::OnCrisisActorDestroyed);
+		ThugCharacter->OnEndPlay.AddDynamic(this, &ACrisisSpawnPoint::OnCrisisActorEndPlay);
 	}
 	else
 	{
@@ -48,7 +48,8 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	}
 }
 
-void ACrisisSpawnPoint::OnCrisisActorDestroyed(AActor* ActorDestroyed)
+void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason)
 {
+	LOG_MSG("Crisis is over - spawn point reset");
 	bIsCrisisActive = false;
 }
