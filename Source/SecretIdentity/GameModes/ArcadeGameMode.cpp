@@ -42,6 +42,11 @@ void AArcadeGameMode::BeginPlay()
 	LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(fCurrentSpawnTime - fTimer) + " seconds");
 
 	WARN_IF_NULL(ThugEnemyClass);
+
+	if (ThugEnemyClass != nullptr)
+	{
+		ThugEnemyClass->GetDefaultObject(true); //Create the default object upfront so it's ready to be spawned in later
+	}
 }
 
 void AArcadeGameMode::Tick(float DeltaTime)
