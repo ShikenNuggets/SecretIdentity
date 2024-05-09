@@ -18,6 +18,8 @@ AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	if (GetCharacterMovement() != nullptr)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+		GetCharacterMovement()->bRequestedMoveUseAcceleration = true;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
 

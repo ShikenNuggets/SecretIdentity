@@ -4,7 +4,10 @@
 #include "EnemyAIController.h"
 
 #include "Kismet/GameplayStatics.h"
+
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "Perception/AISenseConfig.h"
 
 #include "SecretIdentity/UE_Helpers.h"
@@ -26,50 +29,12 @@ AEnemyAIController::AEnemyAIController()
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	/*LOG_MSG("EnemyAIController - BeginPlay");
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayableCharacter::StaticClass(), FoundActors);
-
-	AActor* Nearest = nullptr;
-	if (FoundActors.Num() > 0)
-	{
-		Nearest = FoundActors[0];
-	}
-
-	if (Nearest != nullptr)
-	{
-		LOG_MSG("Moving towards player...");
-		MoveToActor(Nearest);
-	}
-	else
-	{
-		LOG_MSG_WARNING("Could not find the nearest player character");
-	}*/
+	PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 }
 
 void AEnemyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayableCharacter::StaticClass(), FoundActors);
-
-	AActor* Nearest = nullptr;
-	if (FoundActors.Num() > 0)
-	{
-		Nearest = FoundActors[0];
-	}
-
-	if (Nearest != nullptr)
-	{
-		MoveToActor(Nearest);
-	}
-	else
-	{
-		LOG_MSG_WARNING("Could not find the nearest player character");
-	}*/
 }
 
 void AEnemyAIController::OnPossess(APawn* InPawn)
@@ -78,4 +43,48 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 
 	LOG_MSG("EnemyAIController - OnPossess");
 	RunBehaviorTree(EnemyBehaviorTree);
+}
+
+void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+	WARN_IF_NULL(Actor);
+	WARN_IF_NULL(GetWorld());
+
+	if (Actor == nullptr)
+	{
+		return;
+	}
+
+	if (Stimulus.WasSuccessfullySensed() && Actor->ActorHasTag(TEXT("Player")))
+	{
+		if (GetWorld())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(EnemyTimerHandle);
+		}
+		
+		SetBlackboardValues(true, Actor);
+	}
+	else
+	{
+		if (GetWorld())
+		{
+			FTimerDynamicDelegate delegate;
+			delegate.BindUFunction(this, TEXT("OnStartEnemyTimer"));
+			GetWorld()->GetTimerManager().SetTimer(EnemyTimerHandle, delegate, fLineOfSightTimer, false);
+		}
+	}
+}
+
+void AEnemyAIController::OnStartEnemyTimer()
+{
+	SetBlackboardValues(false, nullptr);
+}
+
+void AEnemyAIController::SetBlackboardValues(bool HasLineOfSight, AActor* TargetActor)
+{
+	if (Blackboard != nullptr)
+	{
+		Blackboard->SetValueAsBool(TEXT("HasLineOfSight"), HasLineOfSight);
+		Blackboard->SetValueAsObject(TEXT("TargetActor"), TargetActor);
+	}
 }

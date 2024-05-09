@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "EnemyAIController.generated.h"
 
+struct FAIStimulus;
+
 /**
  * 
  */
@@ -23,7 +25,19 @@ public:
 
 	virtual void OnPossess(APawn* InPawn);
 
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+	UFUNCTION()
+	void OnStartEnemyTimer();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* EnemyBehaviorTree;
+
+	FTimerHandle EnemyTimerHandle;
+
+	float fLineOfSightTimer = 0.0f;
+
+	void SetBlackboardValues(bool HasLineOfSight, AActor* TargetActor);
 };
