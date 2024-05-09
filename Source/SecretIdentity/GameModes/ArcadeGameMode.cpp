@@ -39,7 +39,7 @@ void AArcadeGameMode::BeginPlay()
 	fCurrentSpawnTime = StartSpawnTime;
 	fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
 
-	LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(fCurrentSpawnTime - fTimer) + " seconds");
+	LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 
 	WARN_IF_NULL(ThugEnemyClass);
 
@@ -57,7 +57,7 @@ void AArcadeGameMode::Tick(float DeltaTime)
 		SpawnCrisis();
 		fTimer -= fCurrentSpawnTime;
 
-		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(fCurrentSpawnTime - fTimer) + " seconds");
+		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 	}
 }
 
