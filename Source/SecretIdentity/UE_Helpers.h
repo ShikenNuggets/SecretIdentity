@@ -8,6 +8,14 @@
 	#define LOG_MSG(M) if (GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Green, M, false); }
 #endif //!LOG_MSG
 
+#ifndef LOG_MSG_WARNING
+	#define LOG_MSG_WARNING(M) if (GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Yellow, M, false); }
+#endif // !LOG_MSG_WARNING
+
+#ifndef LOG_MSG_ERROR
+	#define LOG_MSG_ERROR(M) if (GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Red, M, false); }
+#endif //!LOG_MSG
+
 #ifndef WARN_IF
 	#define WARN_IF(T) if (T && GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Red, TEXT(#T " was false"), false); }
 #endif // !WARN_IF

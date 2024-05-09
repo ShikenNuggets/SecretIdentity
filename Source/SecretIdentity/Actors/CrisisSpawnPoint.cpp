@@ -2,6 +2,9 @@
 
 #include "SecretIdentity/Actors/CrisisSpawnPoint.h"
 
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "SecretIdentity/UE_Helpers.h"
 
 ACrisisSpawnPoint::ACrisisSpawnPoint()
@@ -19,8 +22,10 @@ bool ACrisisSpawnPoint::IsCrisisActive() const
 	return bIsCrisisActive;
 }
 
-void ACrisisSpawnPoint::SpawnCrisis()
+void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 {
+	WARN_IF_NULL(ThugCharacterBP);
+
 	if (bIsCrisisActive)
 	{
 		return; //We shouldn't have two crises spawned in the same location at the same time
@@ -28,6 +33,22 @@ void ACrisisSpawnPoint::SpawnCrisis()
 
 	bIsCrisisActive = true;
 
-	//TODO - Actually spawn the enemy/etc
-	LOG_MSG(TEXT("Spawning crisis of type ") + FString::FromInt(static_cast<int32>(TypeToSpawn)));
+	FVector CurrentLocation = GetActorLocation();
+	FRotator CurrentRotation = GetActorRotation();
+
+	AActor* ThugCharacter = GetWorld()->SpawnActor(ThugCharacterBP, &CurrentLocation, &CurrentRotation);
+	if (ThugCharacter != nullptr)
+	{
+		LOG_MSG(TEXT("Spawned crisis of type ") + FString::FromInt(static_cast<int32>(TypeToSpawn)));
+		ThugCharacter->OnDestroyed.AddDynamic(this, &ACrisisSpawnPoint::OnCrisisActorDestroyed);
+	}
+	else
+	{
+		LOG_MSG_WARNING("Could not spawn Thug Actor. Check for warnings/errors in the Output log");
+	}
+}
+
+void ACrisisSpawnPoint::OnCrisisActorDestroyed(AActor* ActorDestroyed)
+{
+	bIsCrisisActive = false;
 }

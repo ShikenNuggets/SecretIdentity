@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Info.h"
+
 #include "CrisisSpawnPoint.generated.h"
+
+class AArcadeGameMode;
 
 UENUM()
 enum class CrisisType : uint8{
@@ -25,7 +29,9 @@ public:
 	ACrisisSpawnPoint();
 
 	bool IsCrisisActive() const;
-	void SpawnCrisis();
+	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
+
+	void OnCrisisActorDestroyed(AActor* ActorDestroyed);
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,6 +39,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	CrisisType TypeToSpawn = CrisisType::ThugAttack;
+
+	AArcadeGameMode* aArcadeGameMode = nullptr;
 
 	bool bIsCrisisActive = false;
 };

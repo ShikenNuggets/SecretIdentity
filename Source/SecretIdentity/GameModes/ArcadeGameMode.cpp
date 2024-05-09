@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Actors/CrisisSpawnPoint.h"
 
 AArcadeGameMode::AArcadeGameMode()
 {
@@ -39,6 +40,8 @@ void AArcadeGameMode::BeginPlay()
 	fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
 
 	LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(fCurrentSpawnTime - fTimer) + " seconds");
+
+	WARN_IF_NULL(ThugEnemyClass);
 }
 
 void AArcadeGameMode::Tick(float DeltaTime)
@@ -79,7 +82,7 @@ void AArcadeGameMode::SpawnCrisis()
 		}
 
 		LOG_MSG(TEXT("Found crisis to spawn randomly"));
-		CrisisSpawnPoints[fRandomNumber]->SpawnCrisis();
+		CrisisSpawnPoints[fRandomNumber]->SpawnCrisis(ThugEnemyClass);
 		spawnedCrisis = true;
 		break;
 	}
@@ -95,7 +98,7 @@ void AArcadeGameMode::SpawnCrisis()
 			}
 
 			LOG_MSG(TEXT("Found crisis to spawn sequentially"));
-			CSP->SpawnCrisis();
+			CSP->SpawnCrisis(ThugEnemyClass);
 			spawnedCrisis = true;
 			break;
 		}

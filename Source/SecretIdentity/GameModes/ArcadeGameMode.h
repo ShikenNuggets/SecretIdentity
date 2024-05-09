@@ -28,6 +28,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float StartSpawnTime = 30.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ACharacter> ThugEnemyClass;
+
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
 
