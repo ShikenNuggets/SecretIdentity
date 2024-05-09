@@ -85,7 +85,7 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 		{
 			RightHandCollider->SetupAttachment(GetMesh(), TEXT("middle_03_r"));
 			RightHandCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			RightHandCollider->SetSphereRadius(12.0f);
+			RightHandCollider->SetSphereRadius(16.0f);
 		}
 	}
 }
