@@ -67,15 +67,19 @@ void AArcadeGameMode::SpawnCrisis()
 	for (int i = 0; i < 50; i++)
 	{
 		int32 fRandomNumber = FMath::RandRange(0, CrisisSpawnPoints.Num() - 1);
-		WARN_IF(fRandomNumber > CrisisSpawnPoints.Num());
+		WARN_IF(fRandomNumber >= CrisisSpawnPoints.Num());
+		if (fRandomNumber >= CrisisSpawnPoints.Num())
+		{
+			fRandomNumber = 0; //Just in case we get an invalid number (I do not expect this to ever be an issue, but who knows...)
+		}
 
-		if (CrisisSpawnPoints[i]->IsCrisisActive())
+		if (CrisisSpawnPoints[fRandomNumber]->IsCrisisActive())
 		{
 			continue; //Try to find a different one
 		}
 
 		LOG_MSG(TEXT("Found crisis to spawn randomly"));
-		CrisisSpawnPoints[i]->SpawnCrisis();
+		CrisisSpawnPoints[fRandomNumber]->SpawnCrisis();
 		spawnedCrisis = true;
 		break;
 	}
