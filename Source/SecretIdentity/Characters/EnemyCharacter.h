@@ -19,9 +19,14 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateWalkSpeed(float NewWalkSpeed);
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UCombatSkeletalMeshComponent* uCombatMeshComponent;
+
+	void OnDeath();
 };
