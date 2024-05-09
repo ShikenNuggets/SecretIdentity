@@ -4,7 +4,7 @@
 
 #include "Sound/SoundCue.h"
 
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
 
 UMusicAudioComponent::UMusicAudioComponent() : eMusicState(MusicState::None)
 {

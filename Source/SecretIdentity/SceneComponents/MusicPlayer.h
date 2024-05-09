@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/AudioComponent.h"
 #include "Components/ActorComponent.h"
-#include "SecretIdentity.h"
+
+#include "SecretIdentity/SecretIdentity.h"
+
 #include "MusicPlayer.generated.h"
 
 UCLASS()

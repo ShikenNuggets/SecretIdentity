@@ -2,7 +2,7 @@
 
 #include "PlayerCameraComponent.h"
 
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
 
 UPlayerCameraComponent::UPlayerCameraComponent() : FOVChangeTime(0.25f), bHasTargetFOV(false), fTargetFOV(0.0f), fTimer(0.0f)
 {

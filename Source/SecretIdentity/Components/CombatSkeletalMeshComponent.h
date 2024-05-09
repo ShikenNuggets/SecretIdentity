@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkeletalMeshComponent.h"
+
 #include "CombatSkeletalMeshComponent.generated.h"
 
 /**

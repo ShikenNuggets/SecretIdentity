@@ -2,8 +2,8 @@
 
 #include "CombatSkeletalMeshComponent.h"
 
-#include "SecretIdentity.h"
-#include "UE_Helpers.h"
+#include "SecretIdentity/SecretIdentity.h"
+#include "SecretIdentity/UE_Helpers.h"
 
 UCombatSkeletalMeshComponent::UCombatSkeletalMeshComponent()
 {

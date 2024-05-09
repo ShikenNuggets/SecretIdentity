@@ -17,13 +17,13 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
-#include "CombatFieldSystemActor.h"
-#include "PlayableAnimInstance.h"
-#include "PlayerCameraBoom.h"
-#include "PlayerCameraComponent.h"
-#include "PlayCharacterMovementComponent.h"
-#include "MusicPlayer.h"
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Actors/CombatFieldSystemActor.h"
+#include "SecretIdentity/Components/PlayerCameraBoom.h"
+#include "SecretIdentity/Components/PlayerCameraComponent.h"
+#include "SecretIdentity/Components/PlayCharacterMovementComponent.h"
+#include "SecretIdentity/SceneComponents/MusicPlayer.h"
+#include "SecretIdentity/UObjects/PlayableAnimInstance.h"
 
 // Sets default values
 APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializer) :

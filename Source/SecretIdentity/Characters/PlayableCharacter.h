@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "SecretIdentity.h"
+
+#include "SecretIdentity/SecretIdentity.h"
+
 #include "PlayableCharacter.generated.h"
 
 struct FInputActionValue;

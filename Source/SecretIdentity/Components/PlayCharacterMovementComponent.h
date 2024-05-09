@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "SecretIdentity.h"
+
+#include "SecretIdentity/SecretIdentity.h"
+
 #include "PlayCharacterMovementComponent.generated.h"
 
 struct FPlayCharacterMovementOptions

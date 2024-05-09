@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
-#include "SecretIdentity.h"
+
+#include "SecretIdentity/SecretIdentity.h"
+
 #include "PlayerCameraComponent.generated.h"
 
 /**

@@ -2,8 +2,8 @@
 
 #include "EnemyCharacter.h"
 
-#include "CombatSkeletalMeshComponent.h"
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Components/CombatSkeletalMeshComponent.h"
 
 AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCombatSkeletalMeshComponent>(ACharacter::MeshComponentName))

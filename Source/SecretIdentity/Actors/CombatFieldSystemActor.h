@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Field/FieldSystemActor.h"
-#include "UE_Helpers.h"
+
+#include "SecretIdentity/UE_Helpers.h"
+
 #include "CombatFieldSystemActor.generated.h"
 
 /**

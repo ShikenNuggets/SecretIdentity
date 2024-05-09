@@ -2,8 +2,8 @@
 
 #include "PlayerCameraBoom.h"
 
-#include "PlayerCameraComponent.h"
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Components/PlayerCameraComponent.h"
 
 UPlayerCameraBoom::UPlayerCameraBoom() : FollowDistanceChangeTime(0.25f), bHasTargetFollowDistance(false), fTargetFollowDistance(0.0f), fTimer(0.0f)
 {

@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "SecretIdentity.h"
+
+#include "SecretIdentity/SecretIdentity.h"
+
 #include "PlayerCameraBoom.generated.h"
 
 class UPlayerCameraComponent;

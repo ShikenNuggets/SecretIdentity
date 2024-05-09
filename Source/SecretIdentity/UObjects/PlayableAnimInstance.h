@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+
 #include "PlayableAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAnimNotifyDelegate);

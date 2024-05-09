@@ -2,7 +2,7 @@
 
 #include "DefaultGameMode.h"
 
-#include "UE_Helpers.h"
+#include "SecretIdentity/UE_Helpers.h"
 
 ADefaultGameMode::ADefaultGameMode()
 {
