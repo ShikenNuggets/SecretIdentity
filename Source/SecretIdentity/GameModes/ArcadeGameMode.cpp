@@ -57,6 +57,7 @@ void AArcadeGameMode::Tick(float DeltaTime)
 	{
 		SpawnCrisis();
 		fTimer -= fCurrentSpawnTime;
+		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
 
 		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 	}
@@ -66,6 +67,8 @@ void AArcadeGameMode::Tick(float DeltaTime)
 		//Doing this every frame is probably overkill
 		OnUpdateFearMeter.Broadcast(GetFearPercentage());
 	}
+
+	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
 }
 
 void AArcadeGameMode::SpawnCrisis()
@@ -123,6 +126,7 @@ void AArcadeGameMode::SpawnCrisis()
 	}
 	else
 	{
+
 		OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
 	}
 }

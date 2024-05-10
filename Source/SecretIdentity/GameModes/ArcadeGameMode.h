@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, NumActiveCrises);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimer, float, SessionTimeInSeconds);
 
 /**
  * 
@@ -31,6 +32,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FUpdateFearMeterDelegate OnUpdateFearMeter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FUpdateSessionTimer OnUpdateSessionTimer;
 
 protected:
 	virtual void BeginPlay() override;
