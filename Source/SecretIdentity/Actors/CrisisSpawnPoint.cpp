@@ -22,6 +22,11 @@ bool ACrisisSpawnPoint::IsCrisisActive() const
 	return bIsCrisisActive;
 }
 
+bool ACrisisSpawnPoint::IsCrisisActiveAndNotResolved() const
+{
+	return bIsCrisisActive && !bIsActiveCrisisResolved;
+}
+
 void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 {
 	WARN_IF_NULL(ThugCharacterBP);
@@ -31,7 +36,7 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 		return; //We shouldn't have two crises spawned in the same location at the same time
 	}
 
-	bIsCrisisActive = true;
+	ActivateCrisis();
 
 	FVector CurrentLocation = GetActorLocation();
 	FRotator CurrentRotation = GetActorRotation();
@@ -52,4 +57,27 @@ void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayRea
 {
 	LOG_MSG("Crisis is over - spawn point reset");
 	bIsCrisisActive = false;
+}
+
+float ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
+{
+	FDateTime Now = FDateTime::UtcNow();
+
+	float StartSeconds = static_cast<float>(fActiveCrisisStartTime.GetSecond()) + (fActiveCrisisStartTime.GetMillisecond() / 1000.0f);
+	float CurrentSeconds = static_cast<float>(Now.GetSecond()) + (Now.GetMillisecond() / 1000.0f);
+
+	return CurrentSeconds - StartSeconds;
+}
+
+void ACrisisSpawnPoint::ActivateCrisis()
+{
+	bIsCrisisActive = true;
+	bIsActiveCrisisResolved = false;
+	fActiveCrisisStartTime = FDateTime::UtcNow();
+}
+
+void ACrisisSpawnPoint::ResolveCrisis()
+{
+	bIsActiveCrisisResolved = true;
+	fActiveCrisisStartTime = FDateTime();
 }

@@ -29,10 +29,13 @@ public:
 	ACrisisSpawnPoint();
 
 	bool IsCrisisActive() const;
+	bool IsCrisisActiveAndNotResolved() const;
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
 	UFUNCTION()
 	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason);
+
+	float GetTimeSinceCrisisStarted() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -44,4 +47,9 @@ private:
 	AArcadeGameMode* aArcadeGameMode = nullptr;
 
 	bool bIsCrisisActive = false;
+	bool bIsActiveCrisisResolved = false;
+	FDateTime fActiveCrisisStartTime;
+
+	void ActivateCrisis();
+	void ResolveCrisis();
 };

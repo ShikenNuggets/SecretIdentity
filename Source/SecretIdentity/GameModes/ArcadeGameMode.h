@@ -20,6 +20,8 @@ class SECRETIDENTITY_API AArcadeGameMode : public ADefaultGameMode
 public:
 	AArcadeGameMode();
 
+	void OnCrisisResolved();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -31,10 +33,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ACharacter> ThugEnemyClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
+	int NumActiveCrises = 0;
+
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 
 	void SpawnCrisis();
+
+	int GetNumActiveCrises();
+	float GetTotalFear();
+	float GetFearPercentage();
 };

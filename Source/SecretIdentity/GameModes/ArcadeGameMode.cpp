@@ -115,3 +115,40 @@ void AArcadeGameMode::SpawnCrisis()
 		LOG_MSG(TEXT("All crisis spawn points were active, skipping this cycle"));
 	}
 }
+
+int AArcadeGameMode::GetNumActiveCrises()
+{
+	int ActiveCrises = 0;
+
+	for (const auto& CSP : CrisisSpawnPoints)
+	{
+		if (CSP->IsCrisisActiveAndNotResolved())
+		{
+			ActiveCrises++;
+		}
+	}
+
+	return ActiveCrises;
+}
+
+float AArcadeGameMode::GetTotalFear()
+{
+	float FearTotal = 0.0f;
+
+	for (const auto& CSP : CrisisSpawnPoints)
+	{
+		FearTotal += CSP->GetTimeSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
+	}
+
+	return FearTotal;
+}
+
+float AArcadeGameMode::GetFearPercentage()
+{
+	return GetTotalFear() / (CrisisSpawnPoints.Num() * 12.0f); //Equivalent to all crisis spawn points being active for 60 seconds
+}
+
+void AArcadeGameMode::OnCrisisResolved()
+{
+
+}
