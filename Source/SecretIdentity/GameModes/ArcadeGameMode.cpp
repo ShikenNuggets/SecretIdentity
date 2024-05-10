@@ -62,10 +62,12 @@ void AArcadeGameMode::Tick(float DeltaTime)
 		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 	}
 
-	if (GetNumActiveCrises() > 0)
+	fCurrentFearPercentage = GetFearPercentage();
+	OnUpdateFearMeter.Broadcast(static_cast<float>(fCurrentFearPercentage)); //This is mainly for UI so we're okay with lower precision
+
+	if (fCurrentFearPercentage >= 1.0f)
 	{
-		//Doing this every frame is probably overkill
-		OnUpdateFearMeter.Broadcast(GetFearPercentage());
+		GameOver();
 	}
 
 	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
@@ -146,21 +148,25 @@ int AArcadeGameMode::GetNumActiveCrises()
 	return ActiveCrises;
 }
 
-float AArcadeGameMode::GetTotalFear()
+double AArcadeGameMode::GetTotalFear()
 {
-	float FearTotal = 0.0f;
+	double FearTotal = 0.0f;
 
 	for (const auto& CSP : CrisisSpawnPoints)
 	{
-		FearTotal += CSP->GetTimeSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
+		double FearAmount = CSP->GetTimeSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
+		WARN_IF(FearAmount < 0.0f);
+		FearTotal += FMath::Clamp(FearAmount, 0.0, std::numeric_limits<double>::infinity());
 	}
 
 	return FearTotal;
 }
 
-float AArcadeGameMode::GetFearPercentage()
+double AArcadeGameMode::GetFearPercentage()
 {
-	return GetTotalFear() / (CrisisSpawnPoints.Num() * 12.0f); //Equivalent to all crisis spawn points being active for 60 seconds
+	double FearPercentage = GetTotalFear() / (CrisisSpawnPoints.Num() * 12.0f);
+	WARN_IF(FearPercentage < 0.0f); //Greater than 1 is okay, but this should DEFINITELY never be negative
+	return FMath::Clamp(FearPercentage, 0.0f, 1.0f); //Equivalent to all crisis spawn points being active for 60 seconds
 }
 
 void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
@@ -168,4 +174,11 @@ void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 	LOG_MSG("Crisis resolved!");
 	OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
 	OnUpdateFearMeter.Broadcast(GetFearPercentage());
+}
+
+void AArcadeGameMode::GameOver()
+{
+	GetWorld()->GetWorldSettings()->SetTimeDilation(0.0f);
+	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
+	OnGameOver.Broadcast();
 }

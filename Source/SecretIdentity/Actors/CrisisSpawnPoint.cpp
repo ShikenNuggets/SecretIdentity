@@ -61,7 +61,7 @@ void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayRea
 	bIsCrisisActive = false;
 }
 
-float ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
+double ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
 {
 	if (!bIsCrisisActive || bIsActiveCrisisResolved)
 	{
@@ -69,11 +69,7 @@ float ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
 	}
 
 	FDateTime Now = FDateTime::UtcNow();
-
-	float StartSeconds = static_cast<float>(fActiveCrisisStartTime.GetSecond()) + (fActiveCrisisStartTime.GetMillisecond() / 1000.0f);
-	float CurrentSeconds = static_cast<float>(Now.GetSecond()) + (Now.GetMillisecond() / 1000.0f);
-
-	return CurrentSeconds - StartSeconds;
+	return UE_Helpers::GetDifferenceInSeconds(fActiveCrisisStartTime, Now);
 }
 
 void ACrisisSpawnPoint::ActivateCrisis()

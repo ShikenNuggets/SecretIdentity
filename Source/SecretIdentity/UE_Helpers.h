@@ -36,4 +36,10 @@ class SECRETIDENTITY_API UE_Helpers
 public:
 	UE_Helpers();
 	~UE_Helpers();
+
+	static inline double GetDifferenceInSeconds(FDateTime TimeStamp1, FDateTime TimeStamp2)
+	{
+		int64 DifferenceInTicks = TimeStamp2.GetTicks() - TimeStamp1.GetTicks();
+		return DifferenceInTicks / 1'000'000.0;
+	}
 };

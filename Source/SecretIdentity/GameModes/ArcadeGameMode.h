@@ -11,7 +11,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, NumActiveCrises);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimer, float, SessionTimeInSeconds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimerDelegate, float, SessionTimeInSeconds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOverDelegate);
 
 /**
  * 
@@ -34,7 +35,10 @@ public:
 	FUpdateFearMeterDelegate OnUpdateFearMeter;
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
-	FUpdateSessionTimer OnUpdateSessionTimer;
+	FUpdateSessionTimerDelegate OnUpdateSessionTimer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FGameOverDelegate OnGameOver;
 
 protected:
 	virtual void BeginPlay() override;
@@ -52,12 +56,15 @@ private:
 
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
+	double fCurrentFearPercentage = 0.0f;
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 
 	void SpawnCrisis();
 
 	int GetNumActiveCrises();
-	float GetTotalFear();
-	float GetFearPercentage();
+	double GetTotalFear();
+	double GetFearPercentage();
+
+	void GameOver();
 };

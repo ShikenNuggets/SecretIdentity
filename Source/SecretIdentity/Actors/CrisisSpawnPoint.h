@@ -42,7 +42,7 @@ public:
 	UFUNCTION()
 	void OnCrisisActorDead(AEnemyCharacter* Enemy);
 
-	float GetTimeSinceCrisisStarted() const;
+	double GetTimeSinceCrisisStarted() const;
 
 	FCrisisResolvedDelegate OnCrisisResolved;
 
