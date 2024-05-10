@@ -76,4 +76,6 @@ void AEnemyCharacter::OnDeath()
 	}
 
 	SetLifeSpan(15.0f);
+
+	OnDeathDelegate.Broadcast(this);
 }

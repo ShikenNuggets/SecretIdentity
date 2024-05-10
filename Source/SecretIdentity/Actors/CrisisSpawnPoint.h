@@ -9,6 +9,8 @@
 #include "CrisisSpawnPoint.generated.h"
 
 class AArcadeGameMode;
+class ACrisisSpawnPoint;
+class AEnemyCharacter;
 
 UENUM()
 enum class CrisisType : uint8{
@@ -16,6 +18,8 @@ enum class CrisisType : uint8{
 
 	Count
 };
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FCrisisResolvedDelegate, ACrisisSpawnPoint*);
 
 /**
  * 
@@ -35,7 +39,12 @@ public:
 	UFUNCTION()
 	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason);
 
+	UFUNCTION()
+	void OnCrisisActorDead(AEnemyCharacter* Enemy);
+
 	float GetTimeSinceCrisisStarted() const;
+
+	FCrisisResolvedDelegate OnCrisisResolved;
 
 protected:
 	virtual void BeginPlay() override;

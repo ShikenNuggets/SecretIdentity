@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Characters/EnemyCharacter.h"
 
 ACrisisSpawnPoint::ACrisisSpawnPoint()
 {
@@ -41,10 +42,11 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	FVector CurrentLocation = GetActorLocation();
 	FRotator CurrentRotation = GetActorRotation();
 
-	AActor* ThugCharacter = GetWorld()->SpawnActor(ThugCharacterBP, &CurrentLocation, &CurrentRotation);
+	AEnemyCharacter* ThugCharacter = Cast<AEnemyCharacter>(GetWorld()->SpawnActor(ThugCharacterBP, &CurrentLocation, &CurrentRotation));
 	if (ThugCharacter != nullptr)
 	{
 		LOG_MSG(TEXT("Spawned crisis of type ") + FString::FromInt(static_cast<int32>(TypeToSpawn)));
+		ThugCharacter->OnDeathDelegate.AddUObject(this, &ACrisisSpawnPoint::OnCrisisActorDead);
 		ThugCharacter->OnEndPlay.AddDynamic(this, &ACrisisSpawnPoint::OnCrisisActorEndPlay);
 	}
 	else
@@ -61,6 +63,11 @@ void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayRea
 
 float ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
 {
+	if (!bIsCrisisActive || bIsActiveCrisisResolved)
+	{
+		return 0.0f;
+	}
+
 	FDateTime Now = FDateTime::UtcNow();
 
 	float StartSeconds = static_cast<float>(fActiveCrisisStartTime.GetSecond()) + (fActiveCrisisStartTime.GetMillisecond() / 1000.0f);
@@ -80,4 +87,10 @@ void ACrisisSpawnPoint::ResolveCrisis()
 {
 	bIsActiveCrisisResolved = true;
 	fActiveCrisisStartTime = FDateTime();
+}
+
+void ACrisisSpawnPoint::OnCrisisActorDead(AEnemyCharacter* Enemy)
+{
+	ResolveCrisis(); //Very important that this is called BEFORE the broadcast
+	OnCrisisResolved.Broadcast(this);
 }

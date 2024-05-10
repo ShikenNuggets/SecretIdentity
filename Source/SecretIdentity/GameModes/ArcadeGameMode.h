@@ -9,6 +9,9 @@
 
 #include "ArcadeGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, NumActiveCrises);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
+
 /**
  * 
  */
@@ -20,7 +23,14 @@ class SECRETIDENTITY_API AArcadeGameMode : public ADefaultGameMode
 public:
 	AArcadeGameMode();
 
-	void OnCrisisResolved();
+	UFUNCTION()
+	void OnCrisisResolved(ACrisisSpawnPoint* CSP);
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FUpdateCrisisCountDelegate OnUpdateCrisisCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FUpdateFearMeterDelegate OnUpdateFearMeter;
 
 protected:
 	virtual void BeginPlay() override;

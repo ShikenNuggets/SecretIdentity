@@ -7,7 +7,10 @@
 
 #include "EnemyCharacter.generated.h"
 
+class AEnemyCharacter;
 class UCombatSkeletalMeshComponent;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FEnemyCharacterDeathDelegate, AEnemyCharacter*);
 
 UCLASS()
 class SECRETIDENTITY_API AEnemyCharacter : public ACharacter
@@ -21,6 +24,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateWalkSpeed(float NewWalkSpeed);
+
+	FEnemyCharacterDeathDelegate OnDeathDelegate;
 
 protected:
 	virtual void BeginPlay() override;

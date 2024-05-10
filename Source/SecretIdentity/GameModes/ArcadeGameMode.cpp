@@ -25,11 +25,12 @@ void AArcadeGameMode::BeginPlay()
 
 	for (const auto& A : FoundActors)
 	{
-		ACrisisSpawnPoint* csp = Cast<ACrisisSpawnPoint>(A);
-		WARN_IF_NULL(csp);
-		if (csp != nullptr)
+		ACrisisSpawnPoint* CSP = Cast<ACrisisSpawnPoint>(A);
+		WARN_IF_NULL(CSP);
+		if (CSP != nullptr)
 		{
-			CrisisSpawnPoints.Add(csp);
+			CrisisSpawnPoints.Add(CSP);
+			CSP->OnCrisisResolved.AddUObject(this, &AArcadeGameMode::OnCrisisResolved);
 		}
 	}
 
@@ -58,6 +59,12 @@ void AArcadeGameMode::Tick(float DeltaTime)
 		fTimer -= fCurrentSpawnTime;
 
 		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
+	}
+
+	if (GetNumActiveCrises() > 0)
+	{
+		//Doing this every frame is probably overkill
+		OnUpdateFearMeter.Broadcast(GetFearPercentage());
 	}
 }
 
@@ -114,6 +121,10 @@ void AArcadeGameMode::SpawnCrisis()
 	{
 		LOG_MSG(TEXT("All crisis spawn points were active, skipping this cycle"));
 	}
+	else
+	{
+		OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
+	}
 }
 
 int AArcadeGameMode::GetNumActiveCrises()
@@ -148,7 +159,9 @@ float AArcadeGameMode::GetFearPercentage()
 	return GetTotalFear() / (CrisisSpawnPoints.Num() * 12.0f); //Equivalent to all crisis spawn points being active for 60 seconds
 }
 
-void AArcadeGameMode::OnCrisisResolved()
+void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 {
-
+	LOG_MSG("Crisis resolved!");
+	OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
+	OnUpdateFearMeter.Broadcast(GetFearPercentage());
 }
