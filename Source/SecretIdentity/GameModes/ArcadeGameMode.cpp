@@ -57,7 +57,9 @@ void AArcadeGameMode::Tick(float DeltaTime)
 	{
 		SpawnCrisis();
 		fTimer -= fCurrentSpawnTime;
+
 		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
+		fCurrentSpawnTime = FMath::Clamp(fCurrentSpawnTime, 1.0f, std::numeric_limits<float>::infinity()); //Things get weird if this number gets too low
 
 		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 	}
@@ -164,9 +166,9 @@ double AArcadeGameMode::GetTotalFear()
 
 double AArcadeGameMode::GetFearPercentage()
 {
-	double FearPercentage = GetTotalFear() / (CrisisSpawnPoints.Num() * 12.0f);
+	double FearPercentage = GetTotalFear() / (CrisisSpawnPoints.Num() * 60.0f);
 	WARN_IF(FearPercentage < 0.0f); //Greater than 1 is okay, but this should DEFINITELY never be negative
-	return FMath::Clamp(FearPercentage, 0.0f, 1.0f); //Equivalent to all crisis spawn points being active for 60 seconds
+	return FMath::Clamp(FearPercentage, 0.0f, 1.0f); 
 }
 
 void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
