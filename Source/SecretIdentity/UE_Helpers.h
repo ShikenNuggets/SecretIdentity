@@ -17,7 +17,7 @@
 #endif //!LOG_MSG
 
 #ifndef WARN_IF
-	#define WARN_IF(T) if (T && GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Red, TEXT(#T " was false"), false); }
+	#define WARN_IF(T) if (T && GEngine) { GEngine->AddOnScreenDebugMessage(INDEX_NONE, 30.0f, FColor::Red, TEXT(#T " was true"), false); }
 #endif // !WARN_IF
 
 #ifndef WARN_IF_MSG

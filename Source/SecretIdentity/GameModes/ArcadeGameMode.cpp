@@ -32,6 +32,8 @@ void AArcadeGameMode::BeginPlay()
 		}
 	}
 
+	WARN_IF(CrisisSpawnPoints.IsEmpty());
+
 	//Reset Time/Timers
 	fCurrentSpawnTime = StartSpawnTime;
 	fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
@@ -70,6 +72,10 @@ void AArcadeGameMode::Tick(float DeltaTime)
 void AArcadeGameMode::SpawnCrisis()
 {
 	bool spawnedCrisis = false;
+	if (CrisisSpawnPoints.IsEmpty())
+	{
+		return;
+	}
 
 	//Limit the number of iterations of this loop so it doesn't deadlock the whole game if we get really unlucky
 	//TODO - Toy with this number to see if we can get better results with acceptable performance
@@ -151,6 +157,11 @@ double AArcadeGameMode::GetTotalFear()
 
 double AArcadeGameMode::GetFearPercentage()
 {
+	if (CrisisSpawnPoints.IsEmpty())
+	{
+		return 0.0;
+	}
+
 	double FearPercentage = GetTotalFear() / (CrisisSpawnPoints.Num() * 60.0f);
 	WARN_IF(FearPercentage < 0.0f); //Greater than 1 is okay, but this should DEFINITELY never be negative
 	return FMath::Clamp(FearPercentage, 0.0f, 1.0f); 
