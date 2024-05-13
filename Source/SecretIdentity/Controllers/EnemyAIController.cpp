@@ -41,7 +41,6 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	LOG_MSG("EnemyAIController - OnPossess");
 	RunBehaviorTree(EnemyBehaviorTree);
 }
 

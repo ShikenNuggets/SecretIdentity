@@ -15,8 +15,6 @@ AArcadeGameMode::AArcadeGameMode()
 
 void AArcadeGameMode::BeginPlay()
 {
-	LOG_MSG(TEXT("Arcade Game Mode - BeginPlay"));
-
 	//Get all the Crisis Spawn Points
 	CrisisSpawnPoints.Empty();
 
@@ -34,13 +32,9 @@ void AArcadeGameMode::BeginPlay()
 		}
 	}
 
-	LOG_MSG("Found " + FString::FromInt(CrisisSpawnPoints.Num()) + " CrisisSpawnPoint");
-
 	//Reset Time/Timers
 	fCurrentSpawnTime = StartSpawnTime;
 	fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
-
-	LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 
 	WARN_IF_NULL(ThugEnemyClass);
 
@@ -60,8 +54,6 @@ void AArcadeGameMode::Tick(float DeltaTime)
 
 		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
 		fCurrentSpawnTime = FMath::Clamp(fCurrentSpawnTime, 1.0f, std::numeric_limits<float>::infinity()); //Things get weird if this number gets too low
-
-		LOG_MSG("The next crisis will spawn in " + FString::SanitizeFloat(FMath::RoundHalfFromZero(fCurrentSpawnTime - fTimer), 0) + " seconds");
 	}
 
 	fCurrentFearPercentage = GetFearPercentage();
@@ -100,7 +92,6 @@ void AArcadeGameMode::SpawnCrisis()
 			continue; //Try to find a different one
 		}
 
-		LOG_MSG(TEXT("Found crisis to spawn randomly"));
 		CrisisSpawnPoints[fRandomNumber]->SpawnCrisis(ThugEnemyClass);
 		spawnedCrisis = true;
 		break;
@@ -116,7 +107,6 @@ void AArcadeGameMode::SpawnCrisis()
 				continue;
 			}
 
-			LOG_MSG(TEXT("Found crisis to spawn sequentially"));
 			CSP->SpawnCrisis(ThugEnemyClass);
 			spawnedCrisis = true;
 			break;
@@ -124,13 +114,8 @@ void AArcadeGameMode::SpawnCrisis()
 	}
 
 	//If all spawn points are already active, we'll just skip this cycle
-	if (!spawnedCrisis)
+	if (spawnedCrisis)
 	{
-		LOG_MSG(TEXT("All crisis spawn points were active, skipping this cycle"));
-	}
-	else
-	{
-
 		OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
 	}
 }
@@ -173,7 +158,6 @@ double AArcadeGameMode::GetFearPercentage()
 
 void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 {
-	LOG_MSG("Crisis resolved!");
 	OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
 	OnUpdateFearMeter.Broadcast(GetFearPercentage());
 }
