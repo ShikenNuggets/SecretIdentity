@@ -45,6 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartPlayState();
 
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInMenuState() const{ return eCurrentState == EArcadeGameState::Menu; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInPlayState() const{ return eCurrentState == EArcadeGameState::Play; }
+
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FStartMenuStateDelegate OnStartMenuState;
 
