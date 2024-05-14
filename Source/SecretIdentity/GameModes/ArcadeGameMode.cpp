@@ -15,6 +15,57 @@ AArcadeGameMode::AArcadeGameMode()
 
 void AArcadeGameMode::BeginPlay()
 {
+	eCurrentState = StartState;
+	WARN_IF(eCurrentState >= EArcadeGameState::Count);
+	switch (eCurrentState)
+	{
+		case EArcadeGameState::Menu:
+			StartMenuState();
+			break;
+		case EArcadeGameState::Play:
+			StartPlayState();
+			break;
+		case EArcadeGameState::Count: //Intentional fallthrough
+		default:
+			break;
+	}
+}
+
+void AArcadeGameMode::Tick(float DeltaTime)
+{
+	if (eCurrentState != EArcadeGameState::Play)
+	{
+		return;
+	}
+
+	fTimer += DeltaTime;
+	if (fTimer >= fCurrentSpawnTime)
+	{
+		SpawnCrisis();
+		fTimer -= fCurrentSpawnTime;
+
+		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
+		fCurrentSpawnTime = FMath::Clamp(fCurrentSpawnTime, 1.0f, std::numeric_limits<float>::infinity()); //Things get weird if this number gets too low
+	}
+
+	fCurrentFearPercentage = GetFearPercentage();
+	OnUpdateFearMeter.Broadcast(static_cast<float>(fCurrentFearPercentage)); //This is mainly for UI so we're okay with lower precision
+
+	if (fCurrentFearPercentage >= 1.0f)
+	{
+		GameOver();
+	}
+
+	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
+}
+
+void AArcadeGameMode::StartMenuState()
+{
+	OnStartMenuState.Broadcast();
+}
+
+void AArcadeGameMode::StartPlayState()
+{
 	//Get all the Crisis Spawn Points
 	CrisisSpawnPoints.Empty();
 
@@ -44,29 +95,8 @@ void AArcadeGameMode::BeginPlay()
 	{
 		ThugEnemyClass->GetDefaultObject(true); //Create the default object upfront so it's ready to be spawned in later
 	}
-}
 
-void AArcadeGameMode::Tick(float DeltaTime)
-{
-	fTimer += DeltaTime;
-	if (fTimer >= fCurrentSpawnTime)
-	{
-		SpawnCrisis();
-		fTimer -= fCurrentSpawnTime;
-
-		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
-		fCurrentSpawnTime = FMath::Clamp(fCurrentSpawnTime, 1.0f, std::numeric_limits<float>::infinity()); //Things get weird if this number gets too low
-	}
-
-	fCurrentFearPercentage = GetFearPercentage();
-	OnUpdateFearMeter.Broadcast(static_cast<float>(fCurrentFearPercentage)); //This is mainly for UI so we're okay with lower precision
-
-	if (fCurrentFearPercentage >= 1.0f)
-	{
-		GameOver();
-	}
-
-	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
+	OnStartPlayState.Broadcast();
 }
 
 void AArcadeGameMode::SpawnCrisis()
