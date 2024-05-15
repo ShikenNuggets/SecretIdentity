@@ -9,8 +9,8 @@
 
 #include "ArcadeGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStartMenuStateDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStartPlayStateDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStartMenuStateDelegate, APawn*, NewPawn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStartPlayStateDelegate, APawn*, NewPawn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, NumActiveCrises);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimerDelegate, float, SessionTimeInSeconds);
@@ -71,6 +71,12 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Menu State", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<APawn> MenuPawnBP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<APawn> PlayPawnBP;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float StartSpawnTime = 30.0f;
 
@@ -83,13 +89,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	EArcadeGameState StartState = EArcadeGameState::Menu;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Menu State", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<APawn> MenuPawn;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	APawn* CurrentPawn = nullptr;
 
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
 	double fCurrentFearPercentage = 0.0f;
 	EArcadeGameState eCurrentState = EArcadeGameState::Menu;
+	AActor* aPlayerStart = nullptr;
+	
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 
@@ -100,4 +108,6 @@ private:
 	double GetFearPercentage();
 
 	void GameOver();
+
+	void SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset = 0.0);
 };

@@ -12,6 +12,12 @@ class SECRETIDENTITY_API APlayableCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 	
+	UFUNCTION(BlueprintCallable)
+	void OnStartMenuState(APawn* NewPawn);
+
+	UFUNCTION(BlueprintCallable)
+	void OnStartPlayState(APawn* NewPawn);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
