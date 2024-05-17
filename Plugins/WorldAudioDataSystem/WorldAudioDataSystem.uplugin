@@ -1,0 +1,64 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1",
+	"FriendlyName": "WorldAudioDataSystem",
+	"Description": "A system designed to work with and translate world metadata for use by other audio systems.",
+	"Category": "Audio",
+	"CreatedBy": "Epic Games, Inc.",
+	"CreatedByURL": "https://www.epicgames.com/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": true,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "WorldAudioDataSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+
+		},
+		{
+			"Name": "WorldAudioDataSystemEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Soundscape",
+			"Enabled": true
+		},
+		{
+			"Name": "Crossfader",
+			"Enabled": true
+		},
+		{
+			"Name": "RuleProcessor",
+			"TargetAllowList": [
+				"Editor"
+			],
+			"Enabled": true
+		},
+		{
+			"Name": "Traffic",
+			"Enabled": true
+		},
+		{
+			"Name": "MassCrowd",
+			"Enabled": true
+		},
+		{
+			"Name": "MetaSound",
+			"Enabled": true
+		},
+		{
+			"Name": "StructUtils",
+			"Enabled": true
+		}
+	]
+}
