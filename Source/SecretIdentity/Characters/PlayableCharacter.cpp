@@ -95,6 +95,13 @@ void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	WARN_IF_NULL(Controller);
+	if (Controller != nullptr)
+	{
+		WARN_IF_NULL(Cast<APlayerController>(Controller));
+		LOG_MSG(Controller->GetClass()->GetFName().ToString());
+	}
+	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		uInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());

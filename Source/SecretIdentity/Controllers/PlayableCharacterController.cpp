@@ -35,8 +35,8 @@ void APlayableCharacterController::OnStartMenuState(APawn* NewPawn)
 	LOG_MSG("Test");
 	WARN_IF_NULL(NewPawn);
 
-	bShowMouseCursor = true;
-	Possess(NewPawn);
+	//bShowMouseCursor = true;
+	//Possess(NewPawn);
 }
 
 void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
@@ -44,6 +44,6 @@ void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
 	LOG_MSG("Test2");
 	WARN_IF_NULL(NewPawn);
 
-	bShowMouseCursor = false;
-	Possess(NewPawn);
+	//bShowMouseCursor = false;
+	//Possess(NewPawn);
 }

@@ -232,7 +232,7 @@ void AArcadeGameMode::GameOver()
 
 void AArcadeGameMode::SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
 {
-	if (CurrentPawn != nullptr)
+	/*if (CurrentPawn != nullptr)
 	{
 		CurrentPawn->Destroy();
 		CurrentPawn = nullptr;
@@ -249,5 +249,5 @@ void AArcadeGameMode::SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
 	LOG_MSG("Spawning pawn at " + Location.ToString());
 
 	CurrentPawn = Cast<APawn>(GetWorld()->SpawnActor(PawnToSpawn));
-	WARN_IF_NULL(CurrentPawn);
+	WARN_IF_NULL(CurrentPawn);*/
 }
