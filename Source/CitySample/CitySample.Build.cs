@@ -17,6 +17,7 @@ public class CitySample : ModuleRules
             "HeadMountedDisplay",
             "Json",
             "PhysicsCore",
+			"ChaosCloth",
             "ChaosVehiclesCore",
             "StateTreeModule",
             "StructUtils",

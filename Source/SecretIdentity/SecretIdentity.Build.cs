@@ -17,7 +17,8 @@ public class SecretIdentity : ModuleRules
 			"EnhancedInput",
 			"UMG",
 			"FieldSystemEngine",
-			"AIModule"
+			"AIModule",
+			"ChaosCloth",
 		});
 	}
 }

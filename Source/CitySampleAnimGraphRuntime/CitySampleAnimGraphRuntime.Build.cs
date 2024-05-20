@@ -17,6 +17,7 @@ public class CitySampleAnimGraphRuntime : ModuleRules
 				"AnimGraphRuntime",
 				"AnimGraph",
 				"BlueprintGraph",
+				"ChaosCloth",
 				"CitySample"
 			}
 		);

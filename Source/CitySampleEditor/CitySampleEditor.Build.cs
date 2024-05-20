@@ -51,7 +51,8 @@ public class CitySampleEditor : ModuleRules
 			"MessageLog",
 			"ToolMenus",
 			"Projects",
-			"StudioTelemetry"
+			"StudioTelemetry",
+			"ChaosCloth",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
