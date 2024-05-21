@@ -45,9 +45,6 @@ void APlayableCharacterController::BeginPlay()
 
 void APlayableCharacterController::OnStartMenuState(APawn* NewPawn)
 {
-	LOG_MSG("Test");
-	WARN_IF_NULL(NewPawn);
-
 	bShowMouseCursor = true;
 
 	if (NewPawn != nullptr)
@@ -58,7 +55,6 @@ void APlayableCharacterController::OnStartMenuState(APawn* NewPawn)
 
 void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
 {
-	LOG_MSG("Test2");
 	WARN_IF_NULL(NewPawn);
 
 	bShowMouseCursor = false;

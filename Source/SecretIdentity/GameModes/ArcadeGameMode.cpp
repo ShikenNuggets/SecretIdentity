@@ -82,48 +82,56 @@ void AArcadeGameMode::StartMenuState()
 
 	LOG_MSG("Start Menu State");
 	//SpawnPawn(MenuPawnBP, 2'000);
-	SpawnPlayerPawn(PlayPawnBP, -2'000);
+	SpawnPlayerPawn(PlayPawnBP, -200);
 	OnStartMenuState.Broadcast(CurrentPawn);
 }
 
 void AArcadeGameMode::StartPlayState()
 {
-	eCurrentState = EArcadeGameState::Play;
+	float fTransitionTime = 1.0f;
 
-	LOG_MSG("Start Play State");
-	//SpawnPlayerPawn(PlayPawnBP);
+	OnBeginTransitionToPlayState.Broadcast(aPlayStatePawn, fTransitionTime);
 
-	//Get all the Crisis Spawn Points
-	CrisisSpawnPoints.Empty();
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrisisSpawnPoint::StaticClass(), FoundActors);
-
-	for (const auto& A : FoundActors)
+	FTimerHandle fTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(fTimerHandle, FTimerDelegate::CreateLambda([&]
 	{
-		ACrisisSpawnPoint* CSP = Cast<ACrisisSpawnPoint>(A);
-		WARN_IF_NULL(CSP);
-		if (CSP != nullptr)
+		eCurrentState = EArcadeGameState::Play;
+
+		LOG_MSG("Start Play State");
+		//SpawnPlayerPawn(PlayPawnBP);
+
+		//Get all the Crisis Spawn Points
+		CrisisSpawnPoints.Empty();
+
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrisisSpawnPoint::StaticClass(), FoundActors);
+
+		for (const auto& A : FoundActors)
 		{
-			CrisisSpawnPoints.Add(CSP);
-			CSP->OnCrisisResolved.AddUObject(this, &AArcadeGameMode::OnCrisisResolved);
+			ACrisisSpawnPoint* CSP = Cast<ACrisisSpawnPoint>(A);
+			WARN_IF_NULL(CSP);
+			if (CSP != nullptr)
+			{
+				CrisisSpawnPoints.Add(CSP);
+				CSP->OnCrisisResolved.AddUObject(this, &AArcadeGameMode::OnCrisisResolved);
+			}
 		}
-	}
 
-	WARN_IF(CrisisSpawnPoints.IsEmpty());
+		WARN_IF(CrisisSpawnPoints.IsEmpty());
 
-	//Reset Time/Timers
-	fCurrentSpawnTime = StartSpawnTime;
-	fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
+		//Reset Time/Timers
+		fCurrentSpawnTime = StartSpawnTime;
+		fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
 
-	WARN_IF_NULL(ThugEnemyClass);
+		WARN_IF_NULL(ThugEnemyClass);
 
-	if (ThugEnemyClass != nullptr)
-	{
-		ThugEnemyClass->GetDefaultObject(true); //Create the default object upfront so it's ready to be spawned in later
-	}
+		if (ThugEnemyClass != nullptr)
+		{
+			ThugEnemyClass->GetDefaultObject(true); //Create the default object upfront so it's ready to be spawned in later
+		}
 
-	OnStartPlayState.Broadcast(aPlayStatePawn);
+		OnStartPlayState.Broadcast(aPlayStatePawn);
+	}), fTransitionTime, false);
 }
 
 void AArcadeGameMode::SpawnCrisis()
@@ -252,8 +260,6 @@ void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOf
 		Location = aPlayerStart->GetActorLocation() + FVector(0.0f, 0.0f, ZOffset);
 		Rotation = aPlayerStart->GetActorRotation();
 	}
-
-	LOG_MSG("Spawning pawn at " + Location.ToString());
 
 	aPlayStatePawn = Cast<APawn>(GetWorld()->SpawnActor(PawnToSpawn, &Location, &Rotation));
 	WARN_IF_NULL(aPlayStatePawn);

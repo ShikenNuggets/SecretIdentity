@@ -123,16 +123,9 @@ void APlayableCharacter::OnControlBegins()
 		SwitchState(EPlayerControlState::None);
 	}
 	
-	WARN_IF_NULL(Controller);
-	if (Controller != nullptr)
-	{
-		WARN_IF_NULL(Cast<APlayerController>(Controller));
-		LOG_MSG(Controller->GetClass()->GetFName().ToString());
-	}
-	
+	WARN_IF_NULL(Cast<APlayerController>(Controller));
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
-
 		uInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (uInputSubsystem)
 		{

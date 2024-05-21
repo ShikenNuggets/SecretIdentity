@@ -10,6 +10,7 @@
 #include "ArcadeGameMode.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStartMenuStateDelegate, APawn*, NewPawn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransitionToPlayStateDelegate, APawn*, NewPawn, float, TransitionTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStartPlayStateDelegate, APawn*, NewPawn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, NumActiveCrises);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
@@ -53,6 +54,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FStartMenuStateDelegate OnStartMenuState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FTransitionToPlayStateDelegate OnBeginTransitionToPlayState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FStartPlayStateDelegate OnStartPlayState;
