@@ -23,7 +23,7 @@ void AArcadeGameMode::BeginPlay()
 	//Just a debug check
 	TArray<AActor*> PlayerStarts;
 	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-	WARN_IF_MSG(PlayerStarts.Num() <= 0, "Level has no PlayerStarts");
+	WARN_IF_MSG(PlayerStarts.IsEmpty(), "Level has no PlayerStarts");
 	WARN_IF_MSG(PlayerStarts.Num() > 1, "Level has multiple PlayerStarts");
 
 	eCurrentState = StartState;
@@ -38,6 +38,7 @@ void AArcadeGameMode::BeginPlay()
 			break;
 		case EArcadeGameState::Count: //Intentional fallthrough
 		default:
+			WARN_IF_MSG(true, "EArcadeGameState case not handled!");
 			break;
 	}
 
@@ -56,6 +57,7 @@ void AArcadeGameMode::Tick(float DeltaTime)
 	fTimer += DeltaTime;
 	if (fTimer >= fCurrentSpawnTime)
 	{
+		
 		SpawnCrisis();
 		fTimer -= fCurrentSpawnTime;
 
@@ -76,15 +78,20 @@ void AArcadeGameMode::Tick(float DeltaTime)
 
 void AArcadeGameMode::StartMenuState()
 {
+	eCurrentState = EArcadeGameState::Menu;
+
 	LOG_MSG("Start Menu State");
-	SpawnPawn(MenuPawnBP, 2'000);
+	//SpawnPawn(MenuPawnBP, 2'000);
+	SpawnPlayerPawn(PlayPawnBP, -2'000);
 	OnStartMenuState.Broadcast(CurrentPawn);
 }
 
 void AArcadeGameMode::StartPlayState()
 {
+	eCurrentState = EArcadeGameState::Play;
+
 	LOG_MSG("Start Play State");
-	SpawnPawn(PlayPawnBP);
+	//SpawnPlayerPawn(PlayPawnBP);
 
 	//Get all the Crisis Spawn Points
 	CrisisSpawnPoints.Empty();
@@ -116,7 +123,7 @@ void AArcadeGameMode::StartPlayState()
 		ThugEnemyClass->GetDefaultObject(true); //Create the default object upfront so it's ready to be spawned in later
 	}
 
-	OnStartPlayState.Broadcast(CurrentPawn);
+	OnStartPlayState.Broadcast(aPlayStatePawn);
 }
 
 void AArcadeGameMode::SpawnCrisis()
@@ -230,12 +237,12 @@ void AArcadeGameMode::GameOver()
 	OnGameOver.Broadcast();
 }
 
-void AArcadeGameMode::SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
+void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
 {
-	/*if (CurrentPawn != nullptr)
+	if (aPlayStatePawn != nullptr)
 	{
-		CurrentPawn->Destroy();
-		CurrentPawn = nullptr;
+		aPlayStatePawn->Destroy();
+		aPlayStatePawn = nullptr;
 	}
 
 	FVector Location = FVector::ZeroVector;
@@ -248,6 +255,6 @@ void AArcadeGameMode::SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
 
 	LOG_MSG("Spawning pawn at " + Location.ToString());
 
-	CurrentPawn = Cast<APawn>(GetWorld()->SpawnActor(PawnToSpawn));
-	WARN_IF_NULL(CurrentPawn);*/
+	aPlayStatePawn = Cast<APawn>(GetWorld()->SpawnActor(PawnToSpawn, &Location, &Rotation));
+	WARN_IF_NULL(aPlayStatePawn);
 }

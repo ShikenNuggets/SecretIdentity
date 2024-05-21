@@ -7,7 +7,8 @@
 UENUM()
 enum class EPlayerControlState : uint8
 {
-	Default = 0,
+	None = 0, //Used when the player is not being controlleed
+	Default,
 	Sprinting,
 	Punching,
 	TravelPower_Flight_Strafe,

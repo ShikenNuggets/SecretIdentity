@@ -88,12 +88,40 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 			RightHandCollider->SetSphereRadius(16.0f);
 		}
 	}
+
+	eControlState = EPlayerControlState::None;
 }
 
-// Called when the game starts or when spawned
+void APlayableCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	WARN_IF_NULL(NewController);
+	WARN_IF_NULL(Cast<APlayerController>(NewController));
+	OnControlBegins();
+}
+
 void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (Controller == nullptr)
+	{
+		SwitchState(EPlayerControlState::None);
+	}
+	else
+	{
+		OnControlBegins();
+	}
+}
+
+// Called when the game starts or when spawned
+void APlayableCharacter::OnControlBegins()
+{
+	if (Controller == nullptr)
+	{
+		SwitchState(EPlayerControlState::None);
+	}
 	
 	WARN_IF_NULL(Controller);
 	if (Controller != nullptr)
@@ -104,6 +132,7 @@ void APlayableCharacter::BeginPlay()
 	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
+
 		uInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (uInputSubsystem)
 		{
@@ -238,6 +267,10 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 
 	switch (eControlState)
 	{
+		case EPlayerControlState::None:
+			OnSwitchToNoneState();
+			break;
+
 		case EPlayerControlState::Default:
 			OnSwitchToDefaultState();
 			break;
@@ -305,6 +338,22 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 	}
 
 	return true;
+}
+
+void APlayableCharacter::OnSwitchToNoneState()
+{
+	if (uAnimInstance)
+	{
+		uAnimInstance->IsSprinting = false;
+		uAnimInstance->IsPunching = false;
+		uAnimInstance->FlightMoveSpeed = 0.0f;
+	}
+
+	if (uInputSubsystem != nullptr)
+	{
+		uInputSubsystem->RemoveMappingContext(FlightMappingContext);
+		uInputSubsystem->RemoveMappingContext(DefaultMappingContext);
+	}
 }
 
 void APlayableCharacter::OnSwitchToDefaultState()

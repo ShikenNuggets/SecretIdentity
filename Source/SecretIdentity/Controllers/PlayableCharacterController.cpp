@@ -15,6 +15,19 @@ void APlayableCharacterController::BeginPlay()
 	{
 		GameMode->OnStartMenuState.AddDynamic(this, &APlayableCharacterController::OnStartMenuState);
 		GameMode->OnStartPlayState.AddDynamic(this, &APlayableCharacterController::OnStartPlayState);
+
+		switch (GameMode->StartState)
+		{
+			case EArcadeGameState::Menu:
+				OnStartMenuState(nullptr);
+				break;
+			case EArcadeGameState::Play:
+				OnStartPlayState(nullptr);
+				break;
+			default:
+				WARN_IF_MSG(true, "EArcadeGameState case not handled!");
+				break;
+		}
 	}
 
 	if (HudWidgetClass != nullptr)
@@ -35,8 +48,12 @@ void APlayableCharacterController::OnStartMenuState(APawn* NewPawn)
 	LOG_MSG("Test");
 	WARN_IF_NULL(NewPawn);
 
-	//bShowMouseCursor = true;
-	//Possess(NewPawn);
+	bShowMouseCursor = true;
+
+	if (NewPawn != nullptr)
+	{
+		Possess(NewPawn);
+	}
 }
 
 void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
@@ -44,6 +61,10 @@ void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
 	LOG_MSG("Test2");
 	WARN_IF_NULL(NewPawn);
 
-	//bShowMouseCursor = false;
-	//Possess(NewPawn);
+	bShowMouseCursor = false;
+
+	if (NewPawn != nullptr)
+	{
+		Possess(NewPawn);
+	}
 }

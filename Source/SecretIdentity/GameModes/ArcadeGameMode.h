@@ -19,8 +19,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOverDelegate);
 UENUM()
 enum class EArcadeGameState : uint8
 {
-	Menu,
-	Play,
+	Menu = 0,
+	Play = 1,
 
 	Count
 };
@@ -47,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInMenuState() const{ return eCurrentState == EArcadeGameState::Menu; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInPlayState() const{ return eCurrentState == EArcadeGameState::Play; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	EArcadeGameState StartState = EArcadeGameState::Menu;
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FStartMenuStateDelegate OnStartMenuState;
@@ -86,11 +89,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	int NumActiveCrises = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-	EArcadeGameState StartState = EArcadeGameState::Menu;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	APawn* CurrentPawn = nullptr;
+
+	APawn* aPlayStatePawn = nullptr;
 
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
@@ -109,5 +111,5 @@ private:
 
 	void GameOver();
 
-	void SpawnPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset = 0.0);
+	void SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset = 0.0);
 };

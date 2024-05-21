@@ -55,7 +55,8 @@ void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
 {
 	switch (State)
 	{
-		case EPlayerControlState::Default: //Intentional fallthrough
+		case EPlayerControlState::None: //Intentional fallthrough
+		case EPlayerControlState::Default:
 		case EPlayerControlState::Sprinting:
 		case EPlayerControlState::Punching:
 			SetTargetFOV(DefaultFOV);

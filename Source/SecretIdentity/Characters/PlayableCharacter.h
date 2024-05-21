@@ -43,6 +43,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
+	virtual void PossessedBy(AController* NewController) override;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -50,6 +52,7 @@ protected:
 	void SwitchState(EPlayerControlState NewState);
 	bool IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState) const;
 
+	void OnSwitchToNoneState();
 	void OnSwitchToDefaultState();
 	void OnSwitchToSprintingState();
 	void OnSwitchToPunchState();
@@ -186,6 +189,7 @@ private:
 	FRotator fTargetRotation;
 	float fRotationTimer;
 
+	void OnControlBegins();
 	void SetTargetRotation(const FRotator& Target);
 
 public:

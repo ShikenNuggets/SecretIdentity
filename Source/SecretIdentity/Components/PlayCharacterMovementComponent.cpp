@@ -31,6 +31,12 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 {
 	switch (State)
 	{
+		case EPlayerControlState::None:
+			MaxWalkSpeed = 0.0f;
+			bOrientRotationToMovement = true;
+			SetMovementMode(EMovementMode::MOVE_None);
+			break;
+
 		case EPlayerControlState::Default:
 			MaxWalkSpeed = fOptions.JogSpeed;
 			bOrientRotationToMovement = true;
