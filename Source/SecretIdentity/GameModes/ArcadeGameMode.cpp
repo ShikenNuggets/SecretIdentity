@@ -82,7 +82,7 @@ void AArcadeGameMode::StartMenuState()
 
 	LOG_MSG("Start Menu State");
 	//SpawnPawn(MenuPawnBP, 2'000);
-	SpawnPlayerPawn(PlayPawnBP, -200);
+	SpawnPlayerPawn(PlayPawnBP);
 	OnStartMenuState.Broadcast(CurrentPawn);
 }
 
@@ -245,7 +245,7 @@ void AArcadeGameMode::GameOver()
 	OnGameOver.Broadcast();
 }
 
-void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset)
+void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn)
 {
 	if (aPlayStatePawn != nullptr)
 	{
@@ -257,7 +257,7 @@ void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOf
 	FRotator Rotation = FRotator::ZeroRotator;
 	if (aPlayerStart != nullptr)
 	{
-		Location = aPlayerStart->GetActorLocation() + FVector(0.0f, 0.0f, ZOffset);
+		Location = aPlayerStart->GetActorLocation() + PlayerSpawnOffset;
 		Rotation = aPlayerStart->GetActorRotation();
 	}
 

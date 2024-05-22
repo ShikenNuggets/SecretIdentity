@@ -84,6 +84,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<APawn> PlayPawnBP;
 
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
+	FVector PlayerSpawnOffset = FVector(0.0f, 0.0f, -2000.0f);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float StartSpawnTime = 30.0f;
 
@@ -103,7 +106,6 @@ private:
 	double fCurrentFearPercentage = 0.0f;
 	EArcadeGameState eCurrentState = EArcadeGameState::Menu;
 	AActor* aPlayerStart = nullptr;
-	
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 
@@ -115,5 +117,5 @@ private:
 
 	void GameOver();
 
-	void SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn, double ZOffset = 0.0);
+	void SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn);
 };
