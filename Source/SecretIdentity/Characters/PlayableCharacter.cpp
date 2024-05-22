@@ -113,6 +113,22 @@ void APlayableCharacter::BeginPlay()
 	{
 		OnControlBegins();
 	}
+
+	FVector windSourcePos = FVector(100.0f, 0.0f, 0.0f);
+	FRotator windSourceRot = FRotator(-15.0f, -180.0f, 0.0f);
+	if (GetWorld() != nullptr && WindSource == nullptr)
+	{
+		WindSource = GetWorld()->SpawnActor<AWindDirectionalSource>(windSourcePos, windSourceRot);
+		if (WindSource != nullptr)
+		{
+			WindSource->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			if (WindSource->GetComponent() != nullptr)
+			{
+				WindSource->GetComponent()->Speed = 7.5f;
+				WindSource->GetComponent()->Strength = 20.0f;
+			}
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -146,7 +162,7 @@ void APlayableCharacter::OnControlBegins()
 
 	FVector windSourcePos = FVector(100.0f, 0.0f, 0.0f);
 	FRotator windSourceRot = FRotator(-15.0f, -180.0f, 0.0f);
-	if (GetWorld() != nullptr)
+	if (GetWorld() != nullptr && WindSource == nullptr)
 	{
 		WindSource = GetWorld()->SpawnActor<AWindDirectionalSource>(windSourcePos, windSourceRot);
 		if (WindSource != nullptr)
