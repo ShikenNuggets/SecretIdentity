@@ -27,25 +27,22 @@ class UMusicPlayer;
 class UPlayerCameraBoom;
 class UPlayerCameraComponent;
 
+//Main Player Character
 UCLASS()
 class SECRETIDENTITY_API APlayableCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APlayableCharacter(const FObjectInitializer& ObjectInitializer);
 
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// States
@@ -189,7 +186,7 @@ private:
 	FRotator fTargetRotation;
 	float fRotationTimer;
 
-	void OnControlBegins();
+	void OnControlBegins(); //Called when the pawn is possessed
 	void SetTargetRotation(const FRotator& Target);
 
 public:

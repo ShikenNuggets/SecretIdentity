@@ -9,9 +9,7 @@
 
 #include "CombatFieldSystemActor.generated.h"
 
-/**
- * 
- */
+//Field System Actor specifically for use in combat actions
 UCLASS()
 class SECRETIDENTITY_API ACombatFieldSystemActor : public AFieldSystemActor
 {

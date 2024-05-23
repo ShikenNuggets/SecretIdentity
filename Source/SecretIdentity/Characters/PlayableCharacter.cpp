@@ -25,7 +25,6 @@
 #include "SecretIdentity/SceneComponents/MusicPlayer.h"
 #include "SecretIdentity/UObjects/PlayableAnimInstance.h"
 
-// Sets default values
 APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
@@ -131,7 +130,6 @@ void APlayableCharacter::BeginPlay()
 	}
 }
 
-// Called when the game starts or when spawned
 void APlayableCharacter::OnControlBegins()
 {
 	if (Controller == nullptr)
@@ -143,7 +141,7 @@ void APlayableCharacter::OnControlBegins()
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		uInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (uInputSubsystem)
+		if (uInputSubsystem != nullptr)
 		{
 			uInputSubsystem->AddMappingContext(GlobalMappingContext, 99);
 		}
@@ -224,7 +222,6 @@ void APlayableCharacter::OnControlBegins()
 	SwitchState(EPlayerControlState::Default);
 }
 
-// Called every frame
 void APlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -434,7 +431,6 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
 	}
 }
 
-// Called to bind functionality to input
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

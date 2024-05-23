@@ -6,9 +6,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "ArcadePlayerStart.generated.h"
 
-/**
- * 
- */
+//Player Start specifically for use with the Arcade game mode
 UCLASS()
 class SECRETIDENTITY_API AArcadePlayerStart : public APlayerStart
 {

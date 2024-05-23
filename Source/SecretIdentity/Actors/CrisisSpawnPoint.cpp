@@ -14,6 +14,8 @@ ACrisisSpawnPoint::ACrisisSpawnPoint()
 
 void ACrisisSpawnPoint::BeginPlay()
 {
+	Super::BeginPlay();
+
 	bIsCrisisActive = false;
 	WARN_IF(TypeToSpawn >= CrisisType::Count);
 }
@@ -34,7 +36,7 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 
 	if (bIsCrisisActive)
 	{
-		return; //We shouldn't have two crises spawned in the same location at the same time
+		return; //Do not spawn two crises in the same location at the same time
 	}
 
 	ActivateCrisis();
@@ -59,7 +61,7 @@ void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayRea
 	bIsCrisisActive = false;
 }
 
-double ACrisisSpawnPoint::GetTimeSinceCrisisStarted() const
+double ACrisisSpawnPoint::GetSecondsSinceCrisisStarted() const
 {
 	if (!bIsCrisisActive || bIsActiveCrisisResolved)
 	{

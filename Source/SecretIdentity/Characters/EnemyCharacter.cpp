@@ -45,7 +45,7 @@ void AEnemyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void AEnemyCharacter::UpdateWalkSpeed(float NewWalkSpeed)
 {
-	if(GetCharacterMovement() != nullptr)
+	if (GetCharacterMovement() != nullptr)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = NewWalkSpeed;
 	}

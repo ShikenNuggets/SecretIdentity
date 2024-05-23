@@ -211,7 +211,7 @@ double AArcadeGameMode::GetTotalFear()
 
 	for (const auto& CSP : CrisisSpawnPoints)
 	{
-		double FearAmount = CSP->GetTimeSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
+		double FearAmount = CSP->GetSecondsSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
 		WARN_IF(FearAmount < 0.0f);
 		FearTotal += FMath::Clamp(FearAmount, 0.0, std::numeric_limits<double>::infinity());
 	}

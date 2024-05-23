@@ -12,6 +12,7 @@ class UCombatSkeletalMeshComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEnemyCharacterDeathDelegate, AEnemyCharacter*);
 
+//Base Class for Enemy Characters
 UCLASS()
 class SECRETIDENTITY_API AEnemyCharacter : public ACharacter
 {

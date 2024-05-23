@@ -21,9 +21,7 @@ enum class CrisisType : uint8{
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FCrisisResolvedDelegate, ACrisisSpawnPoint*);
 
-/**
- * 
- */
+//Spawn Point for Crisis Events
 UCLASS()
 class SECRETIDENTITY_API ACrisisSpawnPoint : public AInfo
 {
@@ -37,12 +35,12 @@ public:
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
 	UFUNCTION()
-	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason);
+	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason); //To be called when the Crisis actor is destroyed (removed from the level)
 
 	UFUNCTION()
-	void OnCrisisActorDead(AEnemyCharacter* Enemy);
+	void OnCrisisActorDead(AEnemyCharacter* Enemy); //To be called when the Crisis actor is dead/defeated, but not yet destroyed
 
-	double GetTimeSinceCrisisStarted() const;
+	double GetSecondsSinceCrisisStarted() const;
 
 	FCrisisResolvedDelegate OnCrisisResolved;
 
