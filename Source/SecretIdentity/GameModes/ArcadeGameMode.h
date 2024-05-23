@@ -83,6 +83,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Menu State", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<APawn> MenuPawnBP;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Menu State", meta = (AllowPrivateAccess = "true"))
+	float PlayStateTransitionTime = 1.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<APawn> PlayPawnBP;
 

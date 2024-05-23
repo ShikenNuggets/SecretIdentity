@@ -89,9 +89,7 @@ void AArcadeGameMode::StartMenuState()
 
 void AArcadeGameMode::StartPlayState()
 {
-	float fTransitionTime = 1.0f;
-
-	OnBeginTransitionToPlayState.Broadcast(aPlayStatePawn, fTransitionTime);
+	OnBeginTransitionToPlayState.Broadcast(aPlayStatePawn, PlayStateTransitionTime);
 
 	FTimerHandle fTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(fTimerHandle, FTimerDelegate::CreateLambda([&]
@@ -132,7 +130,7 @@ void AArcadeGameMode::StartPlayState()
 		}
 
 		OnStartPlayState.Broadcast(aPlayStatePawn);
-	}), fTransitionTime, false);
+	}), PlayStateTransitionTime, false);
 }
 
 void AArcadeGameMode::SpawnCrisis()
