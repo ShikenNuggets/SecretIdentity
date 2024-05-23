@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "SecretIdentity/UE_Helpers.h"
+#include "SecretIdentity/Actors/ArcadePlayerStart.h"
 #include "SecretIdentity/Actors/CrisisSpawnPoint.h"
 
 AArcadeGameMode::AArcadeGameMode()
@@ -18,13 +19,13 @@ void AArcadeGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	aPlayerStart = UGameplayStatics::GetActorOfClass(this, APlayerStart::StaticClass());
+	aPlayerStart = Cast<AArcadePlayerStart>(UGameplayStatics::GetActorOfClass(this, AArcadePlayerStart::StaticClass()));
 
 	//Just a debug check
 	TArray<AActor*> PlayerStarts;
-	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-	WARN_IF_MSG(PlayerStarts.IsEmpty(), "Level has no PlayerStarts");
-	WARN_IF_MSG(PlayerStarts.Num() > 1, "Level has multiple PlayerStarts");
+	UGameplayStatics::GetAllActorsOfClass(this, AArcadePlayerStart::StaticClass(), PlayerStarts);
+	WARN_IF_MSG(PlayerStarts.IsEmpty(), "Level has no ArcadePlayerStarts");
+	WARN_IF_MSG(PlayerStarts.Num() > 1, "Level has multiple ArcadePlayerStarts");
 
 	eCurrentState = StartState;
 	WARN_IF(eCurrentState >= EArcadeGameState::Count);
@@ -257,7 +258,7 @@ void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn)
 	FRotator Rotation = FRotator::ZeroRotator;
 	if (aPlayerStart != nullptr)
 	{
-		Location = aPlayerStart->GetActorLocation() + PlayerSpawnOffset;
+		Location = aPlayerStart->GetActorLocation() + aPlayerStart->GetPlayerSpawnOffset();
 		Rotation = aPlayerStart->GetActorRotation();
 	}
 

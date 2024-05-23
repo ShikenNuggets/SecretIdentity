@@ -17,6 +17,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, Fea
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimerDelegate, float, SessionTimeInSeconds);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOverDelegate);
 
+class AArcadePlayerStart;
+
 UENUM()
 enum class EArcadeGameState : uint8
 {
@@ -84,9 +86,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<APawn> PlayPawnBP;
 
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
-	FVector PlayerSpawnOffset = FVector(0.0f, 0.0f, -2000.0f);
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float StartSpawnTime = 30.0f;
 
@@ -105,7 +104,7 @@ private:
 	float fTimer = 0.0f;
 	double fCurrentFearPercentage = 0.0f;
 	EArcadeGameState eCurrentState = EArcadeGameState::Menu;
-	AActor* aPlayerStart = nullptr;
+	AArcadePlayerStart* aPlayerStart = nullptr;
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 
