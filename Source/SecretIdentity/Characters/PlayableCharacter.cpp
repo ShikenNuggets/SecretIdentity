@@ -319,6 +319,12 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 		return false;
 	}
 	
+	//Cannot start sprinting while falling
+	if (NewState == EPlayerControlState::Sprinting && GetCharacterMovement()->IsFalling())
+	{
+		return false;
+	}
+
 	//Cannot punch in mid-air
 	if (NewState == EPlayerControlState::Punching && (GetCharacterMovement()->IsFlying() || GetCharacterMovement()->IsFalling()))
 	{
