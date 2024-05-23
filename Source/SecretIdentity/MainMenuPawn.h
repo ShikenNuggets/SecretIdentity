@@ -27,6 +27,9 @@ protected:
 	virtual void UnPossessed() override;
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Play State Transition", meta = (AllowPrivateAccess = "true"))
+	UCurveFloat* TransitionCurveAsset;
+
 	UCameraComponent* aTransitionTarget = nullptr;
 	float fTransitionTime = 0.0f;
 	

@@ -16,8 +16,13 @@ class SECRETIDENTITY_API AArcadePlayerStart : public APlayerStart
 
 public:
 	FORCEINLINE constexpr FVector GetPlayerSpawnOffset() const{ return PlayerSpawnOffset; }
+	FORCEINLINE FRotator GetPlayerSpawnRotationOffset() const{ return PlayerSpawnRotationOffset; }
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Play State", meta = (AllowPrivateAccess = "true"))
-	FVector PlayerSpawnOffset = FVector(0.0f, 0.0f, -2000.0f); //TODO - Add some kind of visual representation for this in the editor
+	//TODO - Show some kind of visual representation for these in the editor
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Player Spawn", meta = (AllowPrivateAccess = "true"))
+	FVector PlayerSpawnOffset = FVector(0.0f, 0.0f, -2000.0f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Spawn", meta = (AllowPrivateAccess = "true"))
+	FRotator PlayerSpawnRotationOffset = FRotator::ZeroRotator;
 };

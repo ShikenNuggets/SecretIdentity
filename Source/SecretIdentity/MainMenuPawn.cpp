@@ -28,12 +28,17 @@ void AMainMenuPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (aTransitionTarget != nullptr)
+	if (aTransitionTarget != nullptr && fTransitionTime > 0.0f)
 	{
 		fTransitionTimer += DeltaTime;
+		float Alpha = fTransitionTimer / fTransitionTime;
+		if (TransitionCurveAsset != nullptr)
+		{
+			Alpha = TransitionCurveAsset->GetFloatValue(Alpha);
+		}
 
-		FVector NewLocation = FMath::Lerp(fStartLocation, aTransitionTarget->GetComponentLocation(), fTransitionTimer / fTransitionTime);
-		FRotator NewRotation = FMath::Lerp(fStartRotation, aTransitionTarget->GetComponentRotation(), fTransitionTimer / fTransitionTime);
+		FVector NewLocation = FMath::Lerp(fStartLocation, aTransitionTarget->GetComponentLocation(), Alpha);
+		FRotator NewRotation = FMath::Lerp(fStartRotation, aTransitionTarget->GetComponentRotation(), Alpha);
 		SetActorLocationAndRotation(NewLocation, NewRotation);
 	}
 }

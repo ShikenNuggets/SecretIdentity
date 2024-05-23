@@ -259,7 +259,7 @@ void AArcadeGameMode::SpawnPlayerPawn(TSubclassOf<APawn> PawnToSpawn)
 	if (aPlayerStart != nullptr)
 	{
 		Location = aPlayerStart->GetActorLocation() + aPlayerStart->GetPlayerSpawnOffset();
-		Rotation = aPlayerStart->GetActorRotation();
+		Rotation = aPlayerStart->GetActorRotation() + aPlayerStart->GetPlayerSpawnRotationOffset();
 	}
 
 	aPlayStatePawn = Cast<APawn>(GetWorld()->SpawnActor(PawnToSpawn, &Location, &Rotation));
