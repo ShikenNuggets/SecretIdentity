@@ -52,10 +52,13 @@ void AArcadeGameMode::Tick(float DeltaTime)
 
 	if (eCurrentState != EArcadeGameState::Play)
 	{
+		fTimer = 0.0f;
+		fPlayStateTimer = 0.0f;
 		return;
 	}
 
 	fTimer += DeltaTime;
+	fPlayStateTimer += DeltaTime;
 	if (fTimer >= fCurrentSpawnTime)
 	{
 		
@@ -74,7 +77,7 @@ void AArcadeGameMode::Tick(float DeltaTime)
 		GameOver();
 	}
 
-	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
+	OnUpdateSessionTimer.Broadcast(fPlayStateTimer);
 }
 
 void AArcadeGameMode::StartMenuState()
@@ -240,7 +243,7 @@ void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 void AArcadeGameMode::GameOver()
 {
 	GetWorld()->GetWorldSettings()->SetTimeDilation(0.0f);
-	OnUpdateSessionTimer.Broadcast(UGameplayStatics::GetTimeSeconds(this));
+	OnUpdateSessionTimer.Broadcast(fPlayStateTimer);
 	OnGameOver.Broadcast();
 }
 

@@ -105,6 +105,7 @@ private:
 
 	float fCurrentSpawnTime = StartSpawnTime;
 	float fTimer = 0.0f;
+	float fPlayStateTimer = 0.0f;
 	double fCurrentFearPercentage = 0.0f;
 	EArcadeGameState eCurrentState = EArcadeGameState::Menu;
 	AArcadePlayerStart* aPlayerStart = nullptr;
