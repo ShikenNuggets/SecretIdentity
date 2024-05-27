@@ -16,15 +16,8 @@ UPlayCharacterMovementComponent::UPlayCharacterMovementComponent()
 	BrakingDecelerationFlying = 7500.0f;
 	GravityScale = 2.5f;
 
-	SetOptions(FPlayCharacterMovementOptions());
-}
-
-void UPlayCharacterMovementComponent::SetOptions(const FPlayCharacterMovementOptions& Options)
-{
-	fOptions = Options;
-
-	JumpZVelocity = fOptions.DefaultJumpForce;
-	MaxWalkSpeed = fOptions.JogSpeed;
+	JumpZVelocity = DefaultJumpForce;
+	MaxWalkSpeed = JogSpeed;
 }
 
 void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState State)
@@ -38,31 +31,31 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 			break;
 
 		case EPlayerControlState::Default:
-			MaxWalkSpeed = fOptions.JogSpeed;
+			MaxWalkSpeed = JogSpeed;
 			bOrientRotationToMovement = true;
 			SetMovementMode(EMovementMode::MOVE_Walking);
 			break;
 
 		case EPlayerControlState::Sprinting:
-			MaxWalkSpeed = fOptions.JogSpeed * fOptions.DefaultSprintMultiplier;
+			MaxWalkSpeed = JogSpeed * DefaultSprintMultiplier;
 			bOrientRotationToMovement = true;
 			break;
 
 		case EPlayerControlState::Punching:
-			MaxWalkSpeed = fOptions.JogSpeed;
+			MaxWalkSpeed = JogSpeed;
 			bOrientRotationToMovement = true;
 			SetMovementMode(EMovementMode::MOVE_None);
 			break;
 
 		case EPlayerControlState::TravelPower_Flight_Strafe:
-			MaxFlySpeed = fOptions.JogSpeed;
+			MaxFlySpeed = JogSpeed;
 			Velocity.Z = 0.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;
 
 		case EPlayerControlState::TravelPower_Flight_Forward:
-			MaxFlySpeed = fOptions.MaxFlightForwardSpeed;
+			MaxFlySpeed = MaxFlightForwardSpeed;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;

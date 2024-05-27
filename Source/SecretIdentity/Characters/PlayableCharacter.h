@@ -70,25 +70,10 @@ protected:
 	void OnPunchInput(const FInputActionValue& Value);
 
 private:
-	//-----------------------------------------------------------------------------------------------------//
-	//----------------------- Player Movement Values ------------------------------------------------------//
-	//-----------------------------------------------------------------------------------------------------//
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
-	float JogSpeed = 600.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
-	float DefaultSprintMultiplier = 2.5f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
-	float DefaultJumpForce = 1200.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
-	float MaxFlightForwardSpeed = 20000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Movement", meta = (AllowPrivateAccess = "true"))
 	float FlightStrafeRotationTime = 0.15f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Movement", meta = (AllowPrivateAccess = "true"))
 	float FlightForwardRotationTime = 0.5f;
 
 	//-----------------------------------------------------------------------------------------------------//

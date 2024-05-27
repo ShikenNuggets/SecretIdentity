@@ -43,15 +43,6 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	uMovementComponent = Cast<UPlayCharacterMovementComponent>(GetCharacterMovement());
 	if (uMovementComponent != nullptr)
 	{
-		FPlayCharacterMovementOptions options;
-		options.JogSpeed = JogSpeed;
-		options.DefaultSprintMultiplier = DefaultSprintMultiplier;
-		options.DefaultJumpForce = DefaultJumpForce;
-		options.MaxFlightForwardSpeed = MaxFlightForwardSpeed;
-		options.FlightStrafeRotationTime = FlightStrafeRotationTime;
-		options.FlightForwardRotationTime = FlightForwardRotationTime;
-
-		uMovementComponent->SetOptions(options);
 		OnPlayerStateChangedDelegate.AddUObject(uMovementComponent, &UPlayCharacterMovementComponent::OnPlayerStateChanged);
 	}
 
