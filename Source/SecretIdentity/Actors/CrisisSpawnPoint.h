@@ -22,8 +22,8 @@ enum class CrisisType : uint8{
 DECLARE_MULTICAST_DELEGATE_OneParam(FCrisisResolvedDelegate, ACrisisSpawnPoint*);
 
 //Spawn Point for Crisis Events
-UCLASS()
-class SECRETIDENTITY_API ACrisisSpawnPoint : public AInfo
+UCLASS(Blueprintable)
+class SECRETIDENTITY_API ACrisisSpawnPoint : public AActor
 {
 	GENERATED_BODY()
 	
@@ -50,8 +50,6 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	CrisisType TypeToSpawn = CrisisType::ThugAttack;
-
-	AArcadeGameMode* aArcadeGameMode = nullptr;
 
 	bool bIsCrisisActive = false;
 	bool bIsActiveCrisisResolved = false;
