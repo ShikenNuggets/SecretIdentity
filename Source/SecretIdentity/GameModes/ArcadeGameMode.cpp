@@ -43,6 +43,7 @@ void AArcadeGameMode::BeginPlay()
 			break;
 	}
 
+	WARN_IF_NULL(GetWorld());
 	WARN_IF_NULL(aPlayerStart);
 }
 
@@ -85,13 +86,18 @@ void AArcadeGameMode::StartMenuState()
 	eCurrentState = EArcadeGameState::Menu;
 
 	LOG_MSG("Start Menu State");
-	//SpawnPawn(MenuPawnBP, 2'000);
 	SpawnPlayerPawn(PlayPawnBP);
 	OnStartMenuState.Broadcast(CurrentPawn);
 }
 
 void AArcadeGameMode::StartPlayState()
 {
+	WARN_IF_NULL(GetWorld());
+	if (GetWorld() == nullptr)
+	{
+		return; //Can't set the timer :(
+	}
+
 	OnBeginTransitionToPlayState.Broadcast(aPlayStatePawn, PlayStateTransitionTime);
 
 	FTimerHandle fTimerHandle;
