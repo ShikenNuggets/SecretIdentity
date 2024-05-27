@@ -23,6 +23,7 @@ class USphereComponent;
 class USpringArmComponent;
 class UUserWidget;
 
+class UCombatColliderComponent;
 class UMusicPlayer;
 class UPlayerCameraBoom;
 class UPlayerCameraComponent;
@@ -151,7 +152,7 @@ private:
 	TSubclassOf<ACombatFieldSystemActor> FieldSystemActorBP;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	USphereComponent* RightHandCollider;
+	UCombatColliderComponent* RightHandCollider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	ACombatFieldSystemActor* RightHandFieldSystem;

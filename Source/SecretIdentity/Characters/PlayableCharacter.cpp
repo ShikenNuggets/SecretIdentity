@@ -19,6 +19,7 @@
 
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/Actors/CombatFieldSystemActor.h"
+#include "SecretIdentity/Components/CombatColliderComponent.h"
 #include "SecretIdentity/Components/PlayerCameraBoom.h"
 #include "SecretIdentity/Components/PlayerCameraComponent.h"
 #include "SecretIdentity/Components/PlayCharacterMovementComponent.h"
@@ -50,9 +51,10 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	if (CameraBoom != nullptr)
 	{
 		CameraBoom->SetupAttachment(RootComponent);
-		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 40.0f)); //Camera should target the shoulders rather than the back
+		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 60.0f)); //Camera should target the head
 		OnPlayerStateChangedDelegate.AddUObject(CameraBoom, &UPlayerCameraBoom::OnPlayerStateChanged);
 
+		//Ideally the CameraBoom would be responsible for setting up the Camera component, but that doesn't work for reasons I don't fully understand
 		FollowCamera = CreateDefaultSubobject<UPlayerCameraComponent>(TEXT("FollowCamera"));
 		if (FollowCamera != nullptr)
 		{
@@ -70,11 +72,10 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 
 	if (GetMesh())
 	{
-		RightHandCollider = CreateDefaultSubobject<USphereComponent>(TEXT("RightHandCollider"));
+		RightHandCollider = CreateDefaultSubobject<UCombatColliderComponent>(TEXT("RightHandCollider"));
 		if (RightHandCollider != nullptr)
 		{
 			RightHandCollider->SetupAttachment(GetMesh(), TEXT("middle_03_r"));
-			RightHandCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			RightHandCollider->SetSphereRadius(16.0f);
 		}
 	}
@@ -592,8 +593,7 @@ void APlayableCharacter::OnAnimNotifyTriggerEnableHandCollision()
 {
 	if (RightHandCollider != nullptr)
 	{
-		RightHandCollider->SetCollisionProfileName(CollisionProfiles::OverlapAllDynamic);
-		RightHandCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		RightHandCollider->Enable();
 	}
 
 	if (RightHandFieldSystem != nullptr)
@@ -607,7 +607,7 @@ void APlayableCharacter::OnAnimNotifyTriggerDisableHandCollision()
 {
 	if (RightHandCollider)
 	{
-		RightHandCollider->SetCollisionProfileName(CollisionProfiles::NoCollision);
+		RightHandCollider->Disable();
 	}
 
 	if (RightHandFieldSystem != nullptr)
