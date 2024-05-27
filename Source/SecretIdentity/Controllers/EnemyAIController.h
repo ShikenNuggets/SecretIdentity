@@ -8,9 +8,6 @@
 
 struct FAIStimulus;
 
-/**
- * 
- */
 UCLASS()
 class SECRETIDENTITY_API AEnemyAIController : public AAIController
 {

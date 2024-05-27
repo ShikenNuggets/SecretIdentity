@@ -11,9 +11,6 @@
 
 class UPlayerCameraComponent;
 
-/**
- * 
- */
 UCLASS()
 class SECRETIDENTITY_API UPlayerCameraBoom : public USpringArmComponent
 {

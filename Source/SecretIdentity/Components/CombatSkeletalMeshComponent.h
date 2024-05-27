@@ -7,9 +7,6 @@
 
 #include "CombatSkeletalMeshComponent.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SECRETIDENTITY_API UCombatSkeletalMeshComponent : public USkeletalMeshComponent
 {

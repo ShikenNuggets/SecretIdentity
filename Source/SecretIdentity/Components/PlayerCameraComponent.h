@@ -9,9 +9,6 @@
 
 #include "PlayerCameraComponent.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SECRETIDENTITY_API UPlayerCameraComponent : public UCameraComponent
 {
@@ -35,12 +32,12 @@ private:
 	float FlightFOV = 120.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Camera", meta = (AllowPrivateAccess = "true"))
-	float FOVChangeTime;
+	float FOVChangeTime = 0.5f;
 
-	bool bHasTargetFOV;
-	float fStartFOV;
-	float fTargetFOV;
-	float fTimer;
+	bool bHasTargetFOV = false;
+	float fStartFOV = DefaultFOV;
+	float fTargetFOV = DefaultFOV;
+	float fTimer = 0.0f;
 
 	void SetTargetFOV(float Target);
 };

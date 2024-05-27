@@ -9,9 +9,6 @@
 
 #include "PlayCharacterMovementComponent.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SECRETIDENTITY_API UPlayCharacterMovementComponent : public UCharacterMovementComponent
 {
