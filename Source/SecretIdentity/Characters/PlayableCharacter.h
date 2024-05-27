@@ -81,96 +81,96 @@ private:
 	//----------------------- Global Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* GlobalMappingContext;
+	UInputMappingContext* GlobalMappingContext = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	UInputAction* LookAction = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Default Input ---------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
+	UInputMappingContext* DefaultMappingContext = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
+	UInputAction* MoveAction = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	UInputAction* JumpAction = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* SprintAction;
+	UInputAction* SprintAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Default State)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* EnableTravelPowerAction;
+	UInputAction* EnableTravelPowerAction = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Flight Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* FlightMappingContext;
+	UInputMappingContext* FlightMappingContext = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* FlightStrafeAction;
+	UInputAction* FlightStrafeAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* FlightForwardAction;
+	UInputAction* FlightForwardAction = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Combat Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Combat)", meta = (AllowPrivateAccess = "true"))
-	UInputAction* PunchAction;
+	UInputAction* PunchAction = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Camera ----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UPlayerCameraBoom* CameraBoom;
+	UPlayerCameraBoom* CameraBoom = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UPlayerCameraComponent* FollowCamera;
+	UPlayerCameraComponent* FollowCamera = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Music -----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
-	UMusicPlayer* MusicPlayer;
+	UMusicPlayer* MusicPlayer = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Cape -----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cape", meta = (AllowPrivateAccess = "true"))
-	AWindDirectionalSource* WindSource;
+	AWindDirectionalSource* WindSource = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Combat ----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ACombatFieldSystemActor> FieldSystemActorBP;
+	TSubclassOf<ACombatFieldSystemActor> FieldSystemActorBP = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	UCombatColliderComponent* RightHandCollider;
+	UCombatColliderComponent* RightHandCollider = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	ACombatFieldSystemActor* RightHandFieldSystem;
+	ACombatFieldSystemActor* RightHandFieldSystem = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
 	FPlayerControlStateDelegate OnPlayerStateChangedDelegate;
 
-	UPlayCharacterMovementComponent* uMovementComponent;
-	UPlayableAnimInstance* uAnimInstance;
-	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem;
-	EPlayerControlState eControlState;
+	UPlayCharacterMovementComponent* uMovementComponent = nullptr;
+	UPlayableAnimInstance* uAnimInstance = nullptr;
+	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem = nullptr;
+	EPlayerControlState eControlState = EPlayerControlState::None;
 
-	bool bHasTargetRotation;
-	FRotator fStartRotation;
-	FRotator fTargetRotation;
-	float fRotationTimer;
+	bool bHasTargetRotation = false;
+	FRotator fStartRotation = FRotator::ZeroRotator;
+	FRotator fTargetRotation = FRotator::ZeroRotator;
+	float fRotationTimer = 0.0f;
 
 	void OnControlBegins(); //Called when the pawn is possessed
 	void SetTargetRotation(const FRotator& Target);
