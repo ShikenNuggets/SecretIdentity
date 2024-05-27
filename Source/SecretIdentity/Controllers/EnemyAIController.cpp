@@ -1,6 +1,5 @@
 // Copyright Carter Rennick, 2024. All Rights Reserved.
 
-
 #include "EnemyAIController.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -19,17 +18,20 @@ AEnemyAIController::AEnemyAIController()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComponent"));
-	/*if (PerceptionComponent != nullptr)
-	{
-		UAISenseConfig config = UAISenseConfig();
-		PerceptionComponent->ConfigureSense(config);
-	}*/
 }
 
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
+
+	if (PerceptionComponent != nullptr)
+	{
+		PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
+	}
+	
+	WARN_IF_NULL(GetWorld());
+	WARN_IF_NULL(PerceptionComponent);
+	WARN_IF_NULL(EnemyBehaviorTree);
 }
 
 void AEnemyAIController::Tick(float DeltaTime)

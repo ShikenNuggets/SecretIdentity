@@ -30,7 +30,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	UBehaviorTree* EnemyBehaviorTree;
+	UBehaviorTree* EnemyBehaviorTree = nullptr;
 
 	FTimerHandle EnemyTimerHandle;
 
