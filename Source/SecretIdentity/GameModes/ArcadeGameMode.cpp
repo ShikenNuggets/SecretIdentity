@@ -60,9 +60,14 @@ void AArcadeGameMode::Tick(float DeltaTime)
 
 	fTimer += DeltaTime;
 	fPlayStateTimer += DeltaTime;
+
+	if (!IsAnyCrisisActive() && fTimer < (fCurrentSpawnTime - 5.0f))
+	{
+		fTimer = fCurrentSpawnTime - 5.0f; //Never have to wait more than 5 seconds for the next crisis if none are active
+	}
+
 	if (fTimer >= fCurrentSpawnTime)
 	{
-		
 		SpawnCrisis();
 		fTimer -= fCurrentSpawnTime;
 
@@ -129,7 +134,6 @@ void AArcadeGameMode::StartPlayState()
 
 		//Reset Time/Timers
 		fCurrentSpawnTime = StartSpawnTime;
-		fTimer = fCurrentSpawnTime - 5.0f; //We want the first crisis to spawn very quickly
 
 		WARN_IF_NULL(ThugEnemyClass);
 
