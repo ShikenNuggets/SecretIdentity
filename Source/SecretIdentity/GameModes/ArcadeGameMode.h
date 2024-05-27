@@ -48,8 +48,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartPlayState();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAnyCrisisActive();
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetNearestActiveCrisisLocationToPlayer();
+
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInMenuState() const{ return eCurrentState == EArcadeGameState::Menu; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInPlayState() const{ return eCurrentState == EArcadeGameState::Play; }
+
+	UFUNCTION(BlueprintCallable) FORCEINLINE APawn* GetPlayStatePawn() const{ return aPlayStatePawn; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	EArcadeGameState StartState = EArcadeGameState::Menu;

@@ -142,6 +142,43 @@ void AArcadeGameMode::StartPlayState()
 	}), PlayStateTransitionTime, false);
 }
 
+bool AArcadeGameMode::IsAnyCrisisActive()
+{
+	return GetNumActiveCrises() > 0;
+}
+
+FVector AArcadeGameMode::GetNearestActiveCrisisLocationToPlayer()
+{
+	if (!IsAnyCrisisActive())
+	{
+		return FVector::Zero();
+	}
+
+	ACrisisSpawnPoint* NearestPoint = nullptr;
+	double NearestDistance = std::numeric_limits<double>::infinity();
+
+	for (const auto& CSP : CrisisSpawnPoints)
+	{
+		WARN_IF_NULL(CSP);
+		if (CSP != nullptr && CSP->IsCrisisActiveAndNotResolved())
+		{
+			double Distance = FMath::Abs(FVector::Distance(CSP->GetActorLocation(), aPlayStatePawn->GetActorLocation()));
+			if (Distance < NearestDistance || NearestPoint == nullptr)
+			{
+				NearestPoint = CSP;
+				NearestDistance = Distance;
+			}
+		}
+	}
+
+	if (NearestPoint != nullptr)
+	{
+		return NearestPoint->GetActorLocation();
+	}
+
+	return FVector::Zero();
+}
+
 void AArcadeGameMode::SpawnCrisis()
 {
 	bool spawnedCrisis = false;
