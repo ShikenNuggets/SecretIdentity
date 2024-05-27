@@ -202,7 +202,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
+	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward && GetCharacterMovement() != nullptr)
 	{
 		float velocityMagnitude = GetCharacterMovement()->Velocity.Size();
 
