@@ -233,7 +233,22 @@ void AArcadeGameMode::SpawnCrisis()
 		}
 	}
 
-	//If all spawn points are already active, we'll just skip this cycle
+	//If all spawn points are active, see if there's any resolved ones we can force to clean up early
+	if (!spawnedCrisis)
+	{
+		for (const auto& CSP : CrisisSpawnPoints)
+		{
+			if (CSP->IsCrisisActive() && CSP->IsCrisisResolved())
+			{
+				CSP->ForceCleanupNow();
+				CSP->SpawnCrisis(ThugEnemyClass);
+				spawnedCrisis = true;
+				break;
+			}
+		}
+	}
+
+	//If all else fails, we'll just skip this cycle
 	if (spawnedCrisis)
 	{
 		OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());

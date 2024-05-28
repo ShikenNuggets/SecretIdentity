@@ -85,6 +85,31 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	}
 }
 
+void ACrisisSpawnPoint::ForceCleanupNow()
+{
+	if (!IsCrisisActive() || !IsCrisisResolved())
+	{
+		return;
+	}
+
+	for (const auto& A : tCrisisActors)
+	{
+		WARN_IF_NULL(A);
+		if (A != nullptr)
+		{
+			A->SetLifeSpan(0.001f);
+		}
+	}
+
+	tCrisisActors.Empty();
+
+	fCooldownTimerHandle.Invalidate();
+
+	bIsCrisisActive = false;
+	bIsActiveCrisisResolved = false;
+	bIsCleaningUp = false;
+}
+
 void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason)
 {
 	WARN_IF_NULL(ActorDestroyed);

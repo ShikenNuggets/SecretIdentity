@@ -37,6 +37,11 @@ public:
 	bool IsCrisisActiveAndNotResolved() const;
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
+	//Overrides player distance and cooldown timer and forces all crisis actors to despawn and crisis to deactive immediately
+	//This is only meant to be used in specific scenarios, do not call it if you're not 100% clear on what it's for
+	//Only works if crisis is already resolved, calling this on an unresolved crisis will do nothing
+	void ForceCleanupNow();
+
 	UFUNCTION()
 	void OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason); //To be called when the Crisis actor is destroyed (removed from the level)
 
