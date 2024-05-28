@@ -102,10 +102,10 @@ void ACrisisSpawnPoint::ForceCleanupNow()
 		return;
 	}
 
-	for (const auto& A : tCrisisActors)
+	for (AActor* A : tCrisisActors)
 	{
 		WARN_IF_NULL(A);
-		if (A != nullptr)
+		if (IsValid(A) && A != nullptr)
 		{
 			A->SetLifeSpan(0.001f);
 		}
