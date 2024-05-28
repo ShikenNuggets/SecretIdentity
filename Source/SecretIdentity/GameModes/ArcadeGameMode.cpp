@@ -111,7 +111,6 @@ void AArcadeGameMode::StartPlayState()
 		eCurrentState = EArcadeGameState::Play;
 
 		LOG_MSG("Start Play State");
-		//SpawnPlayerPawn(PlayPawnBP);
 
 		//Get all the Crisis Spawn Points
 		CrisisSpawnPoints.Empty();
@@ -126,6 +125,7 @@ void AArcadeGameMode::StartPlayState()
 			if (CSP != nullptr)
 			{
 				CrisisSpawnPoints.Add(CSP);
+				OnStartPlayState.AddDynamic(CSP, &ACrisisSpawnPoint::OnPlayStateBegins);
 				CSP->OnCrisisResolved.AddUObject(this, &AArcadeGameMode::OnCrisisResolved);
 			}
 		}

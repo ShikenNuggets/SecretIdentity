@@ -26,6 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateWalkSpeed(float NewWalkSpeed);
 
+	bool IsDead() const{ return bIsDead; }
+
 	FEnemyCharacterDeathDelegate OnDeathDelegate;
 
 protected:
@@ -33,6 +35,7 @@ protected:
 
 private:
 	UCombatSkeletalMeshComponent* uCombatMeshComponent;
+	bool bIsDead;
 
 	void OnDeath();
 };

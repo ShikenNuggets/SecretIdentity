@@ -10,6 +10,8 @@
 
 ACrisisSpawnPoint::ACrisisSpawnPoint()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void ACrisisSpawnPoint::BeginPlay()
@@ -20,9 +22,35 @@ void ACrisisSpawnPoint::BeginPlay()
 	WARN_IF(TypeToSpawn >= CrisisType::Count);
 }
 
+void ACrisisSpawnPoint::Tick(float DeltaTime)
+{
+	if (IsCrisisActive() && bIsActiveCrisisResolved && !bIsCleaningUp)
+	{
+		if (aPlayerPawn == nullptr)
+		{
+			bIsCleaningUp = true;
+			DespawnAllCrisisActors();
+		}
+		else
+		{
+			double DistanceFromPlayer = FMath::Abs(FVector::Distance(GetActorLocation(), aPlayerPawn->GetActorLocation()));
+			if (DistanceFromPlayer > DespawnDistanceWhenResolved)
+			{
+				bIsCleaningUp = true;
+				DespawnAllCrisisActors();
+			}
+		}
+	}
+}
+
 bool ACrisisSpawnPoint::IsCrisisActive() const
 {
 	return bIsCrisisActive;
+}
+
+bool ACrisisSpawnPoint::IsCrisisResolved() const
+{
+	return bIsActiveCrisisResolved;
 }
 
 bool ACrisisSpawnPoint::IsCrisisActiveAndNotResolved() const
@@ -59,7 +87,12 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 
 void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason)
 {
-	bIsCrisisActive = false;
+	tCrisisActors.Remove(ActorDestroyed);
+	if (tCrisisActors.IsEmpty())
+	{
+		bIsCrisisActive = false;
+		bIsCleaningUp = false;
+	}
 }
 
 double ACrisisSpawnPoint::GetSecondsSinceCrisisStarted() const
@@ -98,19 +131,45 @@ void ACrisisSpawnPoint::ActivateCrisis()
 {
 	bIsCrisisActive = true;
 	bIsActiveCrisisResolved = false;
+	bIsCleaningUp = false;
 	fActiveCrisisStartTime = FDateTime::UtcNow();
 }
 
 void ACrisisSpawnPoint::ResolveCrisis()
 {
-	tCrisisActors.Empty();
-
 	bIsActiveCrisisResolved = true;
 	fActiveCrisisStartTime = FDateTime();
 }
 
+void ACrisisSpawnPoint::DespawnAllCrisisActors()
+{
+	for (const auto& A : tCrisisActors)
+	{
+		A->SetLifeSpan(1.0f);
+	}
+}
+
 void ACrisisSpawnPoint::OnCrisisActorDead(AEnemyCharacter* Enemy)
 {
-	ResolveCrisis(); //Very important that this is called BEFORE the broadcast
-	OnCrisisResolved.Broadcast(this);
+	bool IsAnyEnemyAlive = false;
+	for (const auto& A : tCrisisActors)
+	{
+		AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(A);
+		if (Enemy != nullptr && !Enemy->IsDead())
+		{
+			IsAnyEnemyAlive = true;
+			break;
+		}
+	}
+
+	if (!IsAnyEnemyAlive)
+	{
+		ResolveCrisis(); //Very important that this is called BEFORE the broadcast
+		OnCrisisResolved.Broadcast(this);
+	}
+}
+
+void ACrisisSpawnPoint::OnPlayStateBegins(APawn* NewPawn)
+{
+	aPlayerPawn = NewPawn;
 }

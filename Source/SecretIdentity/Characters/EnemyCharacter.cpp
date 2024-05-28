@@ -75,7 +75,6 @@ void AEnemyCharacter::OnDeath()
 		GetCapsuleComponent()->Deactivate();
 	}
 
-	SetLifeSpan(15.0f);
-
+	bIsDead = true;
 	OnDeathDelegate.Broadcast(this);
 }

@@ -30,7 +30,10 @@ class SECRETIDENTITY_API ACrisisSpawnPoint : public AActor
 public:
 	ACrisisSpawnPoint();
 
+	virtual void Tick(float DeltaTime) override;
+
 	bool IsCrisisActive() const;
+	bool IsCrisisResolved() const;
 	bool IsCrisisActiveAndNotResolved() const;
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
@@ -39,6 +42,9 @@ public:
 
 	UFUNCTION()
 	void OnCrisisActorDead(AEnemyCharacter* Enemy); //To be called when the Crisis actor is dead/defeated, but not yet destroyed
+
+	UFUNCTION()
+	void OnPlayStateBegins(APawn* NewPawn);
 
 	double GetSecondsSinceCrisisStarted() const;
 	FVector GetAverageCrisisActorLocation() const;
@@ -55,11 +61,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	CrisisType TypeToSpawn = CrisisType::ThugAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
+	float DespawnDistanceWhenResolved = 10000.0f;
+
 	bool bIsCrisisActive = false;
 	bool bIsActiveCrisisResolved = false;
+	bool bIsCleaningUp = false;
 	FDateTime fActiveCrisisStartTime;
 	TArray<AActor*> tCrisisActors;
+	APawn* aPlayerPawn;
 
 	void ActivateCrisis();
 	void ResolveCrisis();
+	void DespawnAllCrisisActors();
 };
