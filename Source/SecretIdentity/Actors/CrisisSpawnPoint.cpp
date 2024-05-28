@@ -61,6 +61,7 @@ bool ACrisisSpawnPoint::IsCrisisActiveAndNotResolved() const
 void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 {
 	WARN_IF_NULL(ThugCharacterBP);
+	WARN_IF_NULL(GetWorld());
 
 	if (bIsCrisisActive)
 	{
@@ -72,7 +73,16 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	FVector CurrentLocation = GetActorLocation();
 	FRotator CurrentRotation = GetActorRotation();
 
-	AEnemyCharacter* ThugCharacter = Cast<AEnemyCharacter>(GetWorld()->SpawnActor(ThugCharacterBP, &CurrentLocation, &CurrentRotation));
+	AEnemyCharacter* ThugCharacter = nullptr;
+	if (GetWorld() != nullptr && ThugCharacterBP != nullptr)
+	{
+		ThugCharacter = Cast<AEnemyCharacter>(GetWorld()->SpawnActor(ThugCharacterBP, &CurrentLocation, &CurrentRotation));
+	}
+	else if (ThugCharacterBP != nullptr)
+	{
+		LOG_MSG_WARNING("ThugCharacterBP was null!");
+	}
+
 	if (ThugCharacter != nullptr)
 	{
 		ThugCharacter->OnDeathDelegate.AddUObject(this, &ACrisisSpawnPoint::OnCrisisActorDead);
@@ -190,8 +200,8 @@ void ACrisisSpawnPoint::OnCrisisActorDead(AEnemyCharacter* Enemy)
 	bool IsAnyEnemyAlive = false;
 	for (const auto& A : tCrisisActors)
 	{
-		AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(A);
-		if (Enemy != nullptr && !Enemy->IsDead())
+		AEnemyCharacter* CurrentEnemy = Cast<AEnemyCharacter>(A);
+		if (CurrentEnemy != nullptr && !CurrentEnemy->IsDead())
 		{
 			IsAnyEnemyAlive = true;
 			break;
