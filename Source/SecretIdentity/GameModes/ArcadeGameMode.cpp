@@ -222,6 +222,12 @@ void AArcadeGameMode::SpawnCrisis()
 	{
 		for (const auto& CSP : CrisisSpawnPoints)
 		{
+			WARN_IF_NULL(CSP);
+			if (CSP == nullptr)
+			{
+				continue;
+			}
+
 			if (CSP->IsCrisisActive())
 			{
 				continue;
@@ -238,6 +244,12 @@ void AArcadeGameMode::SpawnCrisis()
 	{
 		for (const auto& CSP : CrisisSpawnPoints)
 		{
+			WARN_IF_NULL(CSP);
+			if (CSP == nullptr)
+			{
+				continue;
+			}
+
 			if (CSP->IsCrisisActive() && CSP->IsCrisisResolved() && !CSP->IsPlayerInRange())
 			{
 				CSP->ForceCleanupNow();
@@ -261,6 +273,12 @@ int AArcadeGameMode::GetNumActiveCrises()
 
 	for (const auto& CSP : CrisisSpawnPoints)
 	{
+		WARN_IF_NULL(CSP);
+		if (CSP == nullptr)
+		{
+			continue;
+		}
+
 		if (CSP->IsCrisisActiveAndNotResolved())
 		{
 			ActiveCrises++;
@@ -276,6 +294,12 @@ double AArcadeGameMode::GetTotalFear()
 
 	for (const auto& CSP : CrisisSpawnPoints)
 	{
+		WARN_IF_NULL(CSP);
+		if (CSP == nullptr)
+		{
+			continue;
+		}
+
 		double FearAmount = CSP->GetSecondsSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
 		WARN_IF(FearAmount < 0.0f);
 		FearTotal += FMath::Clamp(FearAmount, 0.0, std::numeric_limits<double>::infinity());

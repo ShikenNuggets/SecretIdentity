@@ -65,6 +65,7 @@ bool ACrisisSpawnPoint::IsPlayerInRange() const
 
 void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 {
+	WARN_IF_MSG(bIsCrisisActive, "SpawnCrisis called on an active spawn point!");
 	WARN_IF_NULL(ThugCharacterBP);
 	WARN_IF_NULL(GetWorld());
 
