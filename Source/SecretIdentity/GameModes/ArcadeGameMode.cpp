@@ -238,7 +238,7 @@ void AArcadeGameMode::SpawnCrisis()
 	{
 		for (const auto& CSP : CrisisSpawnPoints)
 		{
-			if (CSP->IsCrisisActive() && CSP->IsCrisisResolved())
+			if (CSP->IsCrisisActive() && CSP->IsCrisisResolved() && !CSP->IsPlayerInRange())
 			{
 				CSP->ForceCleanupNow();
 				CSP->SpawnCrisis(ThugEnemyClass);

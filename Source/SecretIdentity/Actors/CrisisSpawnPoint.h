@@ -35,11 +35,12 @@ public:
 	bool IsCrisisActive() const;
 	bool IsCrisisResolved() const;
 	bool IsCrisisActiveAndNotResolved() const;
+	bool IsPlayerInRange() const;
 	void SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP);
 
-	//Overrides player distance and cooldown timer and forces all crisis actors to despawn and crisis to deactive immediately
+	//Overrides cooldown timer and forces all crisis actors to despawn and crisis to deactive immediately
 	//This is only meant to be used in specific scenarios, do not call it if you're not 100% clear on what it's for
-	//Only works if crisis is already resolved, calling this on an unresolved crisis will do nothing
+	//Only works if crisis is already resolved and player is out of range, otherwise does nothing
 	void ForceCleanupNow();
 
 	UFUNCTION()

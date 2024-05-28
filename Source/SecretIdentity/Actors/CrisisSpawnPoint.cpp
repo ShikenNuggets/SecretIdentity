@@ -33,8 +33,7 @@ void ACrisisSpawnPoint::Tick(float DeltaTime)
 		}
 		else
 		{
-			double DistanceFromPlayer = FMath::Abs(FVector::Distance(GetActorLocation(), aPlayerPawn->GetActorLocation()));
-			if (DistanceFromPlayer > DespawnDistanceWhenResolved)
+			if (!IsPlayerInRange())
 			{
 				bIsCleaningUp = true;
 				DespawnAllCrisisActors();
@@ -56,6 +55,12 @@ bool ACrisisSpawnPoint::IsCrisisResolved() const
 bool ACrisisSpawnPoint::IsCrisisActiveAndNotResolved() const
 {
 	return bIsCrisisActive && !bIsActiveCrisisResolved;
+}
+
+bool ACrisisSpawnPoint::IsPlayerInRange() const
+{
+	double DistanceFromPlayer = FMath::Abs(FVector::Distance(GetActorLocation(), aPlayerPawn->GetActorLocation()));
+	return DistanceFromPlayer <= DespawnDistanceWhenResolved;
 }
 
 void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
@@ -97,7 +102,7 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 
 void ACrisisSpawnPoint::ForceCleanupNow()
 {
-	if (!IsCrisisActive() || !IsCrisisResolved())
+	if (!IsCrisisActive() || !IsCrisisResolved() || IsPlayerInRange())
 	{
 		return;
 	}
