@@ -64,12 +64,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float DespawnDistanceWhenResolved = 10000.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
+	float CooldownTime = 30.0f;
+
 	bool bIsCrisisActive = false;
 	bool bIsActiveCrisisResolved = false;
 	bool bIsCleaningUp = false;
 	FDateTime fActiveCrisisStartTime;
 	TArray<AActor*> tCrisisActors;
 	APawn* aPlayerPawn;
+	FTimerHandle fCooldownTimerHandle;
 
 	void ActivateCrisis();
 	void ResolveCrisis();

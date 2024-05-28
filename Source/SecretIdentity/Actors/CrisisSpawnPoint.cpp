@@ -87,11 +87,22 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 
 void ACrisisSpawnPoint::OnCrisisActorEndPlay(AActor* ActorDestroyed, EEndPlayReason::Type Reason)
 {
+	WARN_IF_NULL(ActorDestroyed);
+	WARN_IF_NULL(GetWorld());
+
 	tCrisisActors.Remove(ActorDestroyed);
-	if (tCrisisActors.IsEmpty())
+	if (tCrisisActors.IsEmpty() && GetWorld() != nullptr)
 	{
-		bIsCrisisActive = false;
-		bIsCleaningUp = false;
+		if (fCooldownTimerHandle.IsValid())
+		{
+			fCooldownTimerHandle.Invalidate();
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(fCooldownTimerHandle, FTimerDelegate::CreateLambda([&]
+		{
+			bIsCrisisActive = false;
+			bIsCleaningUp = false;
+		}), CooldownTime, false);
 	}
 }
 
