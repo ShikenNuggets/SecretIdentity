@@ -166,7 +166,7 @@ FVector AArcadeGameMode::GetNearestActiveCrisisLocationToPlayer()
 		WARN_IF_NULL(CSP);
 		if (CSP != nullptr && CSP->IsCrisisActiveAndNotResolved())
 		{
-			double Distance = FMath::Abs(FVector::Distance(CSP->GetActorLocation(), aPlayStatePawn->GetActorLocation()));
+			double Distance = FMath::Abs(FVector::Distance(CSP->GetAverageCrisisActorLocation(), aPlayStatePawn->GetActorLocation()));
 			if (Distance < NearestDistance || NearestPoint == nullptr)
 			{
 				NearestPoint = CSP;
@@ -177,7 +177,7 @@ FVector AArcadeGameMode::GetNearestActiveCrisisLocationToPlayer()
 
 	if (NearestPoint != nullptr)
 	{
-		return NearestPoint->GetActorLocation();
+		return NearestPoint->GetAverageCrisisActorLocation();
 	}
 
 	return FVector::Zero();

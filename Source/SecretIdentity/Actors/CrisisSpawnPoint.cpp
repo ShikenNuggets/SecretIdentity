@@ -49,6 +49,7 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	{
 		ThugCharacter->OnDeathDelegate.AddUObject(this, &ACrisisSpawnPoint::OnCrisisActorDead);
 		ThugCharacter->OnEndPlay.AddDynamic(this, &ACrisisSpawnPoint::OnCrisisActorEndPlay);
+		tCrisisActors.Add(ThugCharacter);
 	}
 	else
 	{
@@ -72,6 +73,11 @@ double ACrisisSpawnPoint::GetSecondsSinceCrisisStarted() const
 	return UE_Helpers::GetDifferenceInSeconds(fActiveCrisisStartTime, Now);
 }
 
+FVector ACrisisSpawnPoint::GetAverageCrisisActorLocation() const
+{
+	return UGameplayStatics::GetActorArrayAverageLocation(tCrisisActors);
+}
+
 void ACrisisSpawnPoint::ActivateCrisis()
 {
 	bIsCrisisActive = true;
@@ -81,6 +87,8 @@ void ACrisisSpawnPoint::ActivateCrisis()
 
 void ACrisisSpawnPoint::ResolveCrisis()
 {
+	tCrisisActors.Empty();
+
 	bIsActiveCrisisResolved = true;
 	fActiveCrisisStartTime = FDateTime();
 }

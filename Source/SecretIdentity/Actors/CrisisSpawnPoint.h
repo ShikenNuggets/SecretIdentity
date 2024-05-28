@@ -41,6 +41,7 @@ public:
 	void OnCrisisActorDead(AEnemyCharacter* Enemy); //To be called when the Crisis actor is dead/defeated, but not yet destroyed
 
 	double GetSecondsSinceCrisisStarted() const;
+	FVector GetAverageCrisisActorLocation() const;
 
 	FCrisisResolvedDelegate OnCrisisResolved;
 
@@ -54,6 +55,7 @@ private:
 	bool bIsCrisisActive = false;
 	bool bIsActiveCrisisResolved = false;
 	FDateTime fActiveCrisisStartTime;
+	TArray<AActor*> tCrisisActors;
 
 	void ActivateCrisis();
 	void ResolveCrisis();
