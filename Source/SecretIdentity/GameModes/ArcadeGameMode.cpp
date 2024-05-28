@@ -234,7 +234,7 @@ void AArcadeGameMode::SpawnCrisis()
 	}
 
 	//If all spawn points are active, see if there's any resolved ones we can force to clean up early
-	if (!spawnedCrisis)
+	if (!spawnedCrisis && AllowForcedCleanup)
 	{
 		for (const auto& CSP : CrisisSpawnPoints)
 		{
