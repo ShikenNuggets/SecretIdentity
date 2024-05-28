@@ -78,6 +78,22 @@ FVector ACrisisSpawnPoint::GetAverageCrisisActorLocation() const
 	return UGameplayStatics::GetActorArrayAverageLocation(tCrisisActors);
 }
 
+TArray<FVector> ACrisisSpawnPoint::GetAllCrisisActorPositions() const
+{
+	TArray<FVector> Positions;
+
+	for(const auto& A : tCrisisActors)
+	{
+		WARN_IF_NULL(A);
+		if (A != nullptr)
+		{
+			Positions.Add(A->GetActorLocation());
+		}
+	}
+
+	return Positions;
+}
+
 void ACrisisSpawnPoint::ActivateCrisis()
 {
 	bIsCrisisActive = true;

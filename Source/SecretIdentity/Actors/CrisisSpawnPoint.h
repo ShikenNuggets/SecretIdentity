@@ -43,6 +43,9 @@ public:
 	double GetSecondsSinceCrisisStarted() const;
 	FVector GetAverageCrisisActorLocation() const;
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FVector> GetAllCrisisActorPositions() const;
+
 	FCrisisResolvedDelegate OnCrisisResolved;
 
 protected:
