@@ -177,7 +177,7 @@ FVector AArcadeGameMode::GetNearestActiveCrisisLocationToPlayer()
 
 	if (NearestPoint != nullptr)
 	{
-		return NearestPoint->GetAverageCrisisActorLocation();
+		return NearestPoint->GetAverageCrisisActorLocation() + FVector(0.0f, 0.0f, 45.0f);
 	}
 
 	return FVector::Zero();
