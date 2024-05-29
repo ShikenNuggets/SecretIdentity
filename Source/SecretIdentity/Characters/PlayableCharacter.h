@@ -157,6 +157,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	ACombatFieldSystemActor* RightHandFieldSystem = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float PunchMagnetRange = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float PunchMagnetMoveTime = 0.25f;
+
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Internal --------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
@@ -167,12 +173,17 @@ private:
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem = nullptr;
 	EPlayerControlState eControlState = EPlayerControlState::None;
 
+	bool bHasTargetPosition = true;
 	bool bHasTargetRotation = false;
+	FVector fStartPosition = FVector::Zero();
+	AActor* fTargetForPosition = nullptr;
 	FRotator fStartRotation = FRotator::ZeroRotator;
 	FRotator fTargetRotation = FRotator::ZeroRotator;
+	float fPositionTimer = 0.0f;
 	float fRotationTimer = 0.0f;
 
 	void OnControlBegins(); //Called when the pawn is possessed
+	void SetTargetForPosition(AActor* Target);
 	void SetTargetRotation(const FRotator& Target);
 
 public:

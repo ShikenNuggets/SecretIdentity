@@ -12,6 +12,7 @@
 #include "Field/FieldSystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #include "EnhancedInputComponent.h"
@@ -19,6 +20,7 @@
 
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/Actors/CombatFieldSystemActor.h"
+#include "SecretIdentity/Characters/EnemyCharacter.h"
 #include "SecretIdentity/Components/CombatColliderComponent.h"
 #include "SecretIdentity/Components/PlayerCameraBoom.h"
 #include "SecretIdentity/Components/PlayerCameraComponent.h"
@@ -217,6 +219,26 @@ void APlayableCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	if (bHasTargetPosition && fTargetForPosition != nullptr && IsValid(fTargetForPosition))
+	{
+		fPositionTimer += DeltaTime;
+		float PositionChangeTime = PunchMagnetMoveTime;
+
+		FVector TargetLocation = fTargetForPosition->GetActorLocation();
+		FVector Direction = TargetLocation - GetActorLocation();
+		Direction.Normalize();
+
+		TargetLocation -= (Direction * 75.0f);
+
+		SetActorLocation(FMath::Lerp(fStartPosition, TargetLocation, fPositionTimer / PositionChangeTime));
+		if (fPositionTimer >= PositionChangeTime)
+		{
+			bHasTargetPosition = false;
+			fTargetForPosition = nullptr;
+			fPositionTimer = 0.0f;
+		}
+	}
+
 	if (bHasTargetRotation)
 	{
 		fRotationTimer += DeltaTime;
@@ -225,6 +247,10 @@ void APlayableCharacter::Tick(float DeltaTime)
 		if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 		{
 			fRotationChangeTime = FlightForwardRotationTime;
+		}
+		else if (eControlState == EPlayerControlState::Punching)
+		{
+			fRotationChangeTime = PunchMagnetMoveTime;
 		}
 
 		SetActorRotation(UKismetMathLibrary::Quat_Slerp(fStartRotation.Quaternion(), fTargetRotation.Quaternion(), fRotationTimer / fRotationChangeTime));
@@ -381,6 +407,32 @@ void APlayableCharacter::OnSwitchToPunchState()
 	{
 		uAnimInstance->IsSprinting = false;
 		uAnimInstance->IsPunching = true;
+	}
+
+	TArray<AActor*> Enemies;
+	UGameplayStatics::GetAllActorsOfClass(this, AEnemyCharacter::StaticClass(), Enemies);
+
+	AActor* NearestEnemy = nullptr;
+	float NearestDistance = std::numeric_limits<float>::infinity();
+
+	for (AActor* Actor : Enemies)
+	{
+		AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Actor);
+		if (Enemy != nullptr && IsValid(Enemy) && !Enemy->IsDead())
+		{
+			float Distance = FVector::Distance(Enemy->GetActorLocation(), GetActorLocation());
+			if (NearestEnemy == nullptr || Distance < NearestDistance)
+			{
+				NearestEnemy = Enemy;
+				NearestDistance = Distance;
+			}
+		}
+	}
+
+	if (NearestEnemy != nullptr && IsValid(NearestEnemy) && NearestDistance <= PunchMagnetRange)
+	{
+		SetTargetForPosition(NearestEnemy);
+		SetTargetRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NearestEnemy->GetActorLocation()));
 	}
 }
 
@@ -563,6 +615,20 @@ void APlayableCharacter::OnPunchInput(const FInputActionValue& Value)
 	{
 		SwitchState(EPlayerControlState::Punching);
 	}
+}
+
+void APlayableCharacter::SetTargetForPosition(AActor* Target)
+{
+	if (Target == nullptr || !IsValid(Target))
+	{
+		fTargetForPosition = nullptr;
+		return;
+	}
+
+	bHasTargetPosition = true;
+	fStartPosition = GetActorLocation();
+	fTargetForPosition = Target;
+	fPositionTimer = 0.0f;
 }
 
 void APlayableCharacter::SetTargetRotation(const FRotator& Target)
