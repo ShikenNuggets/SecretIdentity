@@ -20,6 +20,8 @@ public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void AddAudioComponents(UAudioComponent* Source1, UAudioComponent* Source2);
+
 	void OnPlayerStateChanged(EPlayerControlState State);
 
 protected:

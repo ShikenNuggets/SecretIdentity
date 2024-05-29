@@ -70,6 +70,20 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	{
 		MusicPlayer->SetupAttachment(RootComponent);
 		OnPlayerStateChangedDelegate.AddUObject(MusicPlayer, &UMusicPlayer::OnPlayerStateChanged);
+
+		UAudioComponent* Source1 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSource1"));
+		if (Source1 != nullptr)
+		{
+			Source1->SetupAttachment(MusicPlayer);
+		}
+
+		UAudioComponent* Source2 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSource2"));
+		if (Source2 != nullptr)
+		{
+			Source2->SetupAttachment(MusicPlayer);
+		}
+
+		MusicPlayer->AddAudioComponents(Source1, Source2);
 	}
 
 	if (GetMesh())

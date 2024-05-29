@@ -12,18 +12,6 @@ UMusicPlayer::UMusicPlayer()
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = true;
 
-	CurrentMusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSource1"));
-	if (CurrentMusicComponent)
-	{
-		CurrentMusicComponent->SetupAttachment(this);
-	}
-
-	NextMusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioSource2"));
-	if (NextMusicComponent)
-	{
-		NextMusicComponent->SetupAttachment(this);
-	}
-
 	for (int32 i = 0; i <= tSongs.Num(); i++)
 	{
 		tSongs[i] = nullptr;
@@ -60,6 +48,15 @@ void UMusicPlayer::TickComponent(float DeltaTime, enum ELevelTick TickType, FAct
 		Swap(CurrentMusicComponent, NextMusicComponent);
 		bIsCrossFading = false;
 	}
+}
+
+void UMusicPlayer::AddAudioComponents(UAudioComponent* Source1, UAudioComponent* Source2)
+{
+	WARN_IF_NULL(Source1);
+	WARN_IF_NULL(Source2);
+
+	CurrentMusicComponent = Source1;
+	NextMusicComponent = Source2;
 }
 
 void UMusicPlayer::OnPlayerStateChanged(EPlayerControlState State)
