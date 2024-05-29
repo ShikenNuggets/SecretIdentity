@@ -25,7 +25,7 @@ enum class EArcadeGameState : uint8
 	Menu = 0,
 	Play = 1,
 
-	Count
+	Count UMETA(Hidden)
 };
 
 /**

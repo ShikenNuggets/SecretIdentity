@@ -16,7 +16,7 @@ UENUM()
 enum class CrisisType : uint8{
 	ThugAttack,
 
-	Count
+	Count UMETA(Hidden)
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FCrisisResolvedDelegate, ACrisisSpawnPoint*);
