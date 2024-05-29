@@ -531,6 +531,8 @@ void APlayableCharacter::OnFlightStrafeInput(const FInputActionValue& Value)
 
 void APlayableCharacter::OnFlightForwardInput(const FInputActionValue& Value)
 {
+	WARN_IF_NULL(Controller);
+
 	float moveValue = FMath::Clamp(Value.Get<float>(), 0.0f, 1.0f);
 
 	if (moveValue > 0.1f && eControlState != EPlayerControlState::TravelPower_Flight_Forward)
@@ -543,11 +545,14 @@ void APlayableCharacter::OnFlightForwardInput(const FInputActionValue& Value)
 		return;
 	}
 
-	const FRotator Rotation = Controller->GetControlRotation();
-	const FVector ForwardDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+	const FVector ForwardDirection = FRotationMatrix(GetActorRotation()).GetUnitAxis(EAxis::X);
 
 	AddMovementInput(ForwardDirection, moveValue);
-	SetTargetRotation(Rotation);
+
+	if (Controller != nullptr)
+	{
+		SetTargetRotation(Controller->GetControlRotation());
+	}
 }
 
 void APlayableCharacter::OnPunchInput(const FInputActionValue& Value)
