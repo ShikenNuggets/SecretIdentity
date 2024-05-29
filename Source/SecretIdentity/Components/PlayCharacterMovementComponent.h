@@ -17,6 +17,8 @@ class SECRETIDENTITY_API UPlayCharacterMovementComponent : public UCharacterMove
 public:
 	UPlayCharacterMovementComponent();
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	void OnPlayerStateChanged(EPlayerControlState State);
 
 private:
@@ -31,4 +33,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
 	float MaxFlightForwardSpeed = 20000.0f;
+
+	float fDefaultMaxAcceleration;
 };

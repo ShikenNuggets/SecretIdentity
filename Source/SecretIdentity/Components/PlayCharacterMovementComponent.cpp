@@ -6,6 +6,9 @@
 
 UPlayCharacterMovementComponent::UPlayCharacterMovementComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+
 	bOrientRotationToMovement = true;
 	RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 
@@ -18,6 +21,18 @@ UPlayCharacterMovementComponent::UPlayCharacterMovementComponent()
 
 	JumpZVelocity = DefaultJumpForce;
 	MaxWalkSpeed = JogSpeed;
+
+	fDefaultMaxAcceleration = MaxAcceleration;
+}
+
+void UPlayCharacterMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (MovementMode == EMovementMode::MOVE_Flying)
+	{
+		ApplyVelocityBraking(DeltaTime, BrakingFriction, BrakingDecelerationFlying);
+	}
 }
 
 void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState State)
@@ -32,6 +47,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 
 		case EPlayerControlState::Default:
 			MaxWalkSpeed = JogSpeed;
+			MaxAcceleration = fDefaultMaxAcceleration;
 			bOrientRotationToMovement = true;
 			SetMovementMode(EMovementMode::MOVE_Walking);
 			break;
@@ -49,6 +65,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 
 		case EPlayerControlState::TravelPower_Flight_Strafe:
 			MaxFlySpeed = JogSpeed;
+			MaxAcceleration = fDefaultMaxAcceleration * 5.0f;
 			Velocity.Z = 0.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
@@ -56,6 +73,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 
 		case EPlayerControlState::TravelPower_Flight_Forward:
 			MaxFlySpeed = MaxFlightForwardSpeed;
+			MaxAcceleration = fDefaultMaxAcceleration * 5.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;
