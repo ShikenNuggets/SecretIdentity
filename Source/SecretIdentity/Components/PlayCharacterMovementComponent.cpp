@@ -16,7 +16,7 @@ UPlayCharacterMovementComponent::UPlayCharacterMovementComponent()
 	MinAnalogWalkSpeed = 20.0f;
 	BrakingDecelerationWalking = 2000.0f;
 	BrakingDecelerationFalling = 1500.0f;
-	BrakingDecelerationFlying = 7500.0f;
+	BrakingDecelerationFlying = 15000.0f;
 	GravityScale = 2.5f;
 
 	JumpZVelocity = DefaultJumpForce;
@@ -65,7 +65,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 
 		case EPlayerControlState::TravelPower_Flight_Strafe:
 			MaxFlySpeed = JogSpeed;
-			MaxAcceleration = fDefaultMaxAcceleration * 5.0f;
+			MaxAcceleration = fDefaultMaxAcceleration * 8.0f;
 			Velocity.Z = 0.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
@@ -73,7 +73,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 
 		case EPlayerControlState::TravelPower_Flight_Forward:
 			MaxFlySpeed = MaxFlightForwardSpeed;
-			MaxAcceleration = fDefaultMaxAcceleration * 5.0f;
+			MaxAcceleration = fDefaultMaxAcceleration * 8.0f;
 			bOrientRotationToMovement = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;

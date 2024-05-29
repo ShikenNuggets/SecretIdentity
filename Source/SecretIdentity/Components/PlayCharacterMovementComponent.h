@@ -32,7 +32,7 @@ private:
 	float DefaultJumpForce = 1200.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
-	float MaxFlightForwardSpeed = 20000.0f;
+	float MaxFlightForwardSpeed = 7500.0f;
 
 	float fDefaultMaxAcceleration;
 };

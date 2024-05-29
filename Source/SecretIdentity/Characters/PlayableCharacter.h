@@ -75,7 +75,7 @@ private:
 	float FlightStrafeRotationTime = 0.15f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flight Movement", meta = (AllowPrivateAccess = "true"))
-	float FlightForwardRotationTime = 0.5f;
+	float FlightForwardRotationTime = 0.15f;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Global Input ----------------------------------------------------------------//
