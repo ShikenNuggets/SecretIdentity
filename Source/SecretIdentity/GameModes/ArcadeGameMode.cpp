@@ -13,14 +13,18 @@ AArcadeGameMode::AArcadeGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-
-#if UE_BUILD_SHIPPING
-	DebugFastFearMeter = false;
-#endif
 }
 
 void AArcadeGameMode::BeginPlay()
 {
+#if UE_BUILD_SHIPPING
+	DebugFastFearMeter = false;
+#endif
+
+#if UE_BUILD_SHIPPING
+	DebugDisableFearMeter = false;
+#endif
+
 	Super::BeginPlay();
 
 	aPlayerStart = Cast<AArcadePlayerStart>(UGameplayStatics::GetActorOfClass(this, AArcadePlayerStart::StaticClass()));
@@ -338,6 +342,11 @@ double AArcadeGameMode::GetTotalFear()
 	if (DebugFastFearMeter)
 	{
 		FearTotal *= 10.0f;
+	}
+
+	if (DebugDisableFearMeter)
+	{
+		FearTotal = 0.0f;
 	}
 
 	return FearTotal;
