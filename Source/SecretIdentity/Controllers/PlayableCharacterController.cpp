@@ -4,6 +4,8 @@
 
 #include "Blueprint/UserWidget.h"
 
+#include "EnhancedInputSubsystems.h"
+
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/GameModes/ArcadeGameMode.h"
 
@@ -25,6 +27,8 @@ void APlayableCharacterController::BeginPlay()
 		GameMode->OnStartMenuState.AddDynamic(this, &APlayableCharacterController::OnStartMenuState);
 		GameMode->OnStartPlayState.AddDynamic(this, &APlayableCharacterController::OnStartPlayState);
 		GameMode->OnGameOver.AddDynamic(this, &APlayableCharacterController::OnGameOverState);
+		GameMode->OnPause.AddDynamic(this, &APlayableCharacterController::UnlockCursor);
+		GameMode->OnUnpause.AddDynamic(this, &APlayableCharacterController::LockCursor);
 
 		switch (GameMode->StartState)
 		{
@@ -55,7 +59,7 @@ void APlayableCharacterController::BeginPlay()
 
 void APlayableCharacterController::OnStartMenuState(APawn* NewPawn)
 {
-	LockCursor(false);
+	UnlockCursor();
 
 	if (NewPawn != nullptr)
 	{
@@ -67,7 +71,7 @@ void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
 {
 	WARN_IF_NULL(NewPawn);
 
-	LockCursor(true);
+	LockCursor();
 
 	if (NewPawn != nullptr)
 	{
@@ -77,19 +81,17 @@ void APlayableCharacterController::OnStartPlayState(APawn* NewPawn)
 
 void APlayableCharacterController::OnGameOverState()
 {
-	LockCursor(false);
+	UnlockCursor();
 }
 
-void APlayableCharacterController::LockCursor(bool Locked)
+void APlayableCharacterController::LockCursor()
 {
-	bShowMouseCursor = !Locked;
+	bShowMouseCursor = false;
+	SetInputMode(GameInputLockMode);
+}
 
-	if (Locked)
-	{
-		SetInputMode(GameInputLockMode);
-	}
-	else
-	{
-		SetInputMode(MenuInputLockMode);
-	}
+void APlayableCharacterController::UnlockCursor()
+{
+	bShowMouseCursor = true;
+	SetInputMode(MenuInputLockMode);
 }

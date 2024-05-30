@@ -25,7 +25,10 @@ public:
 	void OnGameOverState();
 
 	UFUNCTION(BlueprintCallable)
-	void LockCursor(bool Locked);
+	void LockCursor();
+
+	UFUNCTION(BlueprintCallable)
+	void UnlockCursor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,5 +41,5 @@ private:
 	FInputModeGameAndUI MenuInputLockMode;
 	FInputModeGameOnly GameInputLockMode;
 
-	UUserWidget* uHudWidget;
+	UUserWidget* uHudWidget = nullptr;
 };

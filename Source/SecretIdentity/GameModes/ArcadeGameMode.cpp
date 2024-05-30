@@ -187,6 +187,32 @@ FVector AArcadeGameMode::GetNearestActiveCrisisLocationToPlayer()
 	return FVector::Zero();
 }
 
+void AArcadeGameMode::RequestPauseOrUnpause()
+{
+	if (eCurrentState != EArcadeGameState::Play || bGameOver)
+	{
+		return;
+	}
+
+	bIsPaused = !bIsPaused;
+	float NewTimeDilation = 1.0f;
+	if (bIsPaused)
+	{
+		NewTimeDilation = 0.0f;
+		OnPause.Broadcast();
+	}
+	else
+	{
+		OnUnpause.Broadcast();
+	}
+
+	WARN_IF_NULL(GetWorld());
+	if (GetWorld() != nullptr && GetWorld()->GetWorldSettings() != nullptr)
+	{
+		GetWorld()->GetWorldSettings()->SetTimeDilation(NewTimeDilation);
+	}
+}
+
 void AArcadeGameMode::SpawnCrisis()
 {
 	bool spawnedCrisis = false;
@@ -337,7 +363,15 @@ void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 
 void AArcadeGameMode::GameOver()
 {
-	GetWorld()->GetWorldSettings()->SetTimeDilation(0.0f);
+	WARN_IF_NULL(GetWorld());
+
+	bGameOver = true;
+
+	if (GetWorld() != nullptr && GetWorld()->GetWorldSettings() != nullptr)
+	{
+		GetWorld()->GetWorldSettings()->SetTimeDilation(0.0f);
+	}
+	
 	OnUpdateSessionTimer.Broadcast(fPlayStateTimer);
 	OnGameOver.Broadcast();
 }

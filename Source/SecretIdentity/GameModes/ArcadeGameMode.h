@@ -16,6 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCrisisCountDelegate, int, Num
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateFearMeterDelegate, float, FearMeter);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateSessionTimerDelegate, float, SessionTimeInSeconds);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOverDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseDelegate);
 
 class AArcadePlayerStart;
 
@@ -54,6 +55,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FVector GetNearestActiveCrisisLocationToPlayer();
 
+	UFUNCTION(BlueprintCallable)
+	void RequestPauseOrUnpause();
+
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInMenuState() const{ return eCurrentState == EArcadeGameState::Menu; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool IsInPlayState() const{ return eCurrentState == EArcadeGameState::Play; }
 
@@ -82,6 +86,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
 	FGameOverDelegate OnGameOver;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FPauseDelegate OnPause;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "Delegates");
+	FPauseDelegate OnUnpause;
 
 protected:
 	virtual void BeginPlay() override;
@@ -129,6 +139,8 @@ private:
 	double fCurrentFearPercentage = 0.0f;
 	EArcadeGameState eCurrentState = EArcadeGameState::Menu;
 	AArcadePlayerStart* aPlayerStart = nullptr;
+	bool bGameOver = false;
+	bool bIsPaused = false;
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 

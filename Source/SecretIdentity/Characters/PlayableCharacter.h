@@ -23,6 +23,7 @@ class USphereComponent;
 class USpringArmComponent;
 class UUserWidget;
 
+class AArcadeGameMode;
 class UCombatColliderComponent;
 class UMusicPlayer;
 class UPlayerCameraBoom;
@@ -59,6 +60,7 @@ protected:
 
 	// Default Input
 	void OnLookInput(const FInputActionValue& Value);
+	void OnPauseInput(const FInputActionValue& Value);
 	void OnMoveInput(const FInputActionValue& Value);
 	void OnSprintInput(const FInputActionValue& Value);
 	void OnEnableTravelPowerInput(const FInputActionValue& Value);
@@ -85,6 +87,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Global)", meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseAction = nullptr;
 
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Default Input ---------------------------------------------------------------//
@@ -171,6 +176,7 @@ private:
 	UPlayCharacterMovementComponent* uMovementComponent = nullptr;
 	UPlayableAnimInstance* uAnimInstance = nullptr;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem = nullptr;
+	AArcadeGameMode* aGameMode = nullptr;
 	EPlayerControlState eControlState = EPlayerControlState::None;
 
 	bool bHasTargetPosition = true;

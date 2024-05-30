@@ -25,6 +25,8 @@
 #include "SecretIdentity/Components/PlayerCameraBoom.h"
 #include "SecretIdentity/Components/PlayerCameraComponent.h"
 #include "SecretIdentity/Components/PlayCharacterMovementComponent.h"
+#include "SecretIdentity/Controllers/PlayableCharacterController.h"
+#include "SecretIdentity/GameModes/ArcadeGameMode.h"
 #include "SecretIdentity/SceneComponents/MusicPlayer.h"
 #include "SecretIdentity/UObjects/PlayableAnimInstance.h"
 
@@ -144,9 +146,14 @@ void APlayableCharacter::OnControlBegins()
 	{
 		SwitchState(EPlayerControlState::None);
 	}
+
+	if (GetWorld() != nullptr)
+	{
+		aGameMode = Cast<AArcadeGameMode>(GetWorld()->GetAuthGameMode());
+	}
 	
-	WARN_IF_NULL(Cast<APlayerController>(Controller));
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	WARN_IF_NULL(Cast<APlayableCharacterController>(Controller));
+	if (APlayableCharacterController* PlayerController = Cast<APlayableCharacterController>(Controller))
 	{
 		uInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (uInputSubsystem != nullptr)
@@ -186,6 +193,7 @@ void APlayableCharacter::OnControlBegins()
 	WARN_IF_NULL(DefaultMappingContext);
 	WARN_IF_NULL(MoveAction);
 	WARN_IF_NULL(LookAction);
+	WARN_IF_NULL(PauseAction);
 	WARN_IF_NULL(JumpAction);
 	WARN_IF_NULL(SprintAction);
 	WARN_IF_NULL(EnableTravelPowerAction);
@@ -210,6 +218,7 @@ void APlayableCharacter::OnControlBegins()
 	WARN_IF_NULL(uMovementComponent);
 	WARN_IF_NULL(uAnimInstance);
 	WARN_IF_NULL(uInputSubsystem);
+	WARN_IF_NULL(aGameMode);
 
 	SwitchState(EPlayerControlState::Default);
 }
@@ -490,6 +499,8 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLookInput);
 
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnPauseInput);
+
 		//Default
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnMoveInput);
 
@@ -526,6 +537,15 @@ void APlayableCharacter::OnLookInput(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APlayableCharacter::OnPauseInput(const FInputActionValue& Value)
+{
+	WARN_IF_NULL(aGameMode);
+	if (aGameMode)
+	{
+		aGameMode->RequestPauseOrUnpause();
 	}
 }
 
