@@ -11,12 +11,21 @@ UCLASS()
 class SECRETIDENTITY_API APlayableCharacterController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	APlayableCharacterController();
 	
 	UFUNCTION(BlueprintCallable)
 	void OnStartMenuState(APawn* NewPawn);
 
 	UFUNCTION(BlueprintCallable)
 	void OnStartPlayState(APawn* NewPawn);
+
+	UFUNCTION(BlueprintCallable)
+	void OnGameOverState();
+
+	UFUNCTION(BlueprintCallable)
+	void LockCursor(bool Locked);
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,6 +34,9 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UUserWidget> HudWidgetClass;
+
+	FInputModeGameAndUI MenuInputLockMode;
+	FInputModeGameOnly GameInputLockMode;
 
 	UUserWidget* uHudWidget;
 };
