@@ -13,6 +13,10 @@ AArcadeGameMode::AArcadeGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+#if UE_BUILD_SHIPPING
+	DebugFastFearMeter = false;
+#endif
 }
 
 void AArcadeGameMode::BeginPlay()
@@ -303,6 +307,11 @@ double AArcadeGameMode::GetTotalFear()
 		double FearAmount = CSP->GetSecondsSinceCrisisStarted() / 5.0f; //Every 5 seconds a crisis is active, it increases our fear total by one
 		WARN_IF(FearAmount < 0.0f);
 		FearTotal += FMath::Clamp(FearAmount, 0.0, std::numeric_limits<double>::infinity());
+	}
+
+	if (DebugFastFearMeter)
+	{
+		FearTotal *= 10.0f;
 	}
 
 	return FearTotal;

@@ -112,6 +112,15 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	APawn* CurrentPawn = nullptr;
 
+	//--------------------------------------------------//
+	//--------------- Debug Values ---------------------//
+	//--------------------------------------------------//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
+	bool DebugFastFearMeter = false;
+
+	//--------------------------------------------------//
+	//--------------- Internal -------------------------//
+	//--------------------------------------------------//
 	APawn* aPlayStatePawn = nullptr;
 
 	float fCurrentSpawnTime = StartSpawnTime;
