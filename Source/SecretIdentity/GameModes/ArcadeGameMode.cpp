@@ -17,6 +17,8 @@ AArcadeGameMode::AArcadeGameMode()
 
 void AArcadeGameMode::BeginPlay()
 {
+	Super::BeginPlay();
+
 #if UE_BUILD_SHIPPING
 	DebugFastFearMeter = false;
 #endif
@@ -25,7 +27,10 @@ void AArcadeGameMode::BeginPlay()
 	DebugDisableFearMeter = false;
 #endif
 
-	Super::BeginPlay();
+	if (DebugFastFearMeter || DebugDisableFearMeter)
+	{
+		LOG_MSG_WARNING("Debug values are enabled");
+	}
 
 	aPlayerStart = Cast<AArcadePlayerStart>(UGameplayStatics::GetActorOfClass(this, AArcadePlayerStart::StaticClass()));
 
