@@ -253,8 +253,8 @@ void APlayableCharacter::Tick(float DeltaTime)
 
 		TargetLocation -= (Direction * 75.0f);
 
-		SetActorLocation(FMath::Lerp(fStartPosition, TargetLocation, fPositionTimer / PositionChangeTime));
-		if (fPositionTimer >= PositionChangeTime)
+		SetActorLocation(FMath::Lerp(fStartPosition, TargetLocation, FMath::Clamp(fPositionTimer / PositionChangeTime, 0.0f, 1.0f)));
+		if (fPositionTimer >= PositionChangeTime + 1.0f)
 		{
 			bHasTargetPosition = false;
 			fTargetForPosition = nullptr;
