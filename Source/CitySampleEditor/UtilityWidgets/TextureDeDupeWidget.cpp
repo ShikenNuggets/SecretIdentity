@@ -84,7 +84,7 @@ void UTextureDeDupeWidget::FindDuplicateCRCTextures(bool bMustBeInCook)
 
 	// These packages crash the editor if you try to open them
 	TArray<FName> DoNotOpenAssets;
-	DoNotOpenAssets.Add(TEXT("/Game/Vehicle/vehCar_vehicle03/Texture/Prototype/Weta/maskGrime/T_vehCar_vehicle03_Grime"));
+	DoNotOpenAssets.Add(TEXT("/Game/_ThirdParty/CitySample/Vehicle/vehCar_vehicle03/Texture/Prototype/Weta/maskGrime/T_vehCar_vehicle03_Grime"));
 
 	TMap<uint32, TArray<FAssetData>> CRCToAssetData;
 	for (int i = 0; i < TextureAssetData.Num(); i++)

@@ -20,7 +20,7 @@ static TAutoConsoleVariable<bool> CVarUseMetahumanPresets(
 
 static TAutoConsoleVariable<FString> CVarMetahumanPresetsPath(
     TEXT("Crowd.MetahumanPresetsPath"),
-    "/Game/Crowd/Character/Shared/CrowdPresets.CrowdPresets",
+    "/Game/_ThirdParty/CitySample/Crowd/Character/Shared/CrowdPresets.CrowdPresets",
     TEXT("Path to the data asset containing the Metahuman Presets"),
 	ECVF_Cheat);
 

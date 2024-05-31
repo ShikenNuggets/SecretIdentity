@@ -188,8 +188,8 @@ void FCrowdHairDefinition::UpdateGroomBinding(const FSoftObjectPath& PathToHeadM
 {
 	// Base paths stored per gender so they can be indexed via an ECitySampleCrowdGender
 	static const TArray<FString> BasePaths = {
-		"/Game/Crowd/Character/Male/GroomBindings",
-		"/Game/Crowd/Character/Female/GroomBindings"
+		"/Game/_ThirdParty/CitySample/Crowd/Character/Male/GroomBindings",
+		"/Game/_ThirdParty/CitySample/Crowd/Character/Female/GroomBindings"
 	};
 
 	// Early out if there's no valid groom
