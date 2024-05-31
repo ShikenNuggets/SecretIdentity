@@ -187,6 +187,7 @@ private:
 	FRotator fTargetRotation = FRotator::ZeroRotator;
 	float fPositionTimer = 0.0f;
 	float fRotationTimer = 0.0f;
+	bool bIsHoldingSprintKey = false;
 
 	void OnControlBegins(); //Called when the pawn is possessed
 	void SetTargetForPosition(AActor* Target);

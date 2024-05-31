@@ -285,6 +285,13 @@ void APlayableCharacter::Tick(float DeltaTime)
 			fRotationTimer = 0.0f;
 		}
 	}
+
+	//TODO - Ideally this would be called at the exact moment we land, but this is fine for now
+	if (eControlState == EPlayerControlState::Sprinting && !bIsHoldingSprintKey && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsMovingOnGround())
+	{
+		LOG_MSG("Stopping Sprint");
+		SwitchState(EPlayerControlState::Default);
+	}
 }
 
 void APlayableCharacter::SwitchState(EPlayerControlState NewState)
@@ -332,6 +339,8 @@ void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 
 bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlayerControlState NewState) const
 {
+	WARN_IF_NULL(GetCharacterMovement());
+
 	if (NewState >= EPlayerControlState::Count)
 	{
 		WARN_IF_MSG(true, "Tried to switch player to invalid state!");
@@ -345,13 +354,19 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 	}
 	
 	//Cannot start sprinting while falling
-	if (NewState == EPlayerControlState::Sprinting && GetCharacterMovement()->IsFalling())
+	if (NewState == EPlayerControlState::Sprinting && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsFalling())
+	{
+		return false;
+	}
+
+	//Cannot stop sprinting while falling
+	if (OldState == EPlayerControlState::Sprinting && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsFalling())
 	{
 		return false;
 	}
 
 	//Cannot punch in mid-air
-	if (NewState == EPlayerControlState::Punching && (GetCharacterMovement()->IsFlying() || GetCharacterMovement()->IsFalling()))
+	if (NewState == EPlayerControlState::Punching && GetCharacterMovement() != nullptr && (GetCharacterMovement()->IsFlying() || GetCharacterMovement()->IsFalling()))
 	{
 		return false;
 	}
@@ -568,12 +583,12 @@ void APlayableCharacter::OnMoveInput(const FInputActionValue& Value)
 
 void APlayableCharacter::OnSprintInput(const FInputActionValue& Value)
 {
-	bool isSprinting = Value.Get<bool>();
-	if (isSprinting && eControlState != EPlayerControlState::Sprinting)
+	bIsHoldingSprintKey = Value.Get<bool>();
+	if (bIsHoldingSprintKey && eControlState != EPlayerControlState::Sprinting)
 	{
 		SwitchState(EPlayerControlState::Sprinting);
 	}
-	else if (!isSprinting && eControlState == EPlayerControlState::Sprinting)
+	else if (!bIsHoldingSprintKey && eControlState == EPlayerControlState::Sprinting)
 	{
 		SwitchState(EPlayerControlState::Default);
 	}
