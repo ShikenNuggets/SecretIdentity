@@ -360,7 +360,7 @@ bool APlayableCharacter::IsStateSwitchValid(EPlayerControlState OldState, EPlaye
 	}
 
 	//Cannot stop sprinting while falling
-	if (OldState == EPlayerControlState::Sprinting && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsFalling())
+	if (OldState == EPlayerControlState::Sprinting && NewState == EPlayerControlState::Default && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsFalling())
 	{
 		return false;
 	}
