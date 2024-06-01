@@ -131,6 +131,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
 	bool DebugDisableFearMeter = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
+	bool DebugFastSpawnCrises = false;
+
 	//--------------------------------------------------//
 	//--------------- Internal -------------------------//
 	//--------------------------------------------------//

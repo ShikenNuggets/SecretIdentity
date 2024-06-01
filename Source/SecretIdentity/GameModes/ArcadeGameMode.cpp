@@ -21,13 +21,11 @@ void AArcadeGameMode::BeginPlay()
 
 #if UE_BUILD_SHIPPING
 	DebugFastFearMeter = false;
-#endif
-
-#if UE_BUILD_SHIPPING
 	DebugDisableFearMeter = false;
+	DebugFastSpawnCrises = false;
 #endif
 
-	if (DebugFastFearMeter || DebugDisableFearMeter)
+	if (DebugFastFearMeter || DebugDisableFearMeter || DebugFastSpawnCrises)
 	{
 		LOG_MSG_WARNING("Debug values are enabled");
 	}
@@ -77,6 +75,11 @@ void AArcadeGameMode::Tick(float DeltaTime)
 	if (!IsAnyCrisisActive() && fTimer < (fCurrentSpawnTime - 5.0f))
 	{
 		fTimer = fCurrentSpawnTime - 5.0f; //Never have to wait more than 5 seconds for the next crisis if none are active
+
+		if (DebugFastSpawnCrises)
+		{
+			fTimer = fCurrentSpawnTime;
+		}
 	}
 
 	if (fTimer >= fCurrentSpawnTime)
