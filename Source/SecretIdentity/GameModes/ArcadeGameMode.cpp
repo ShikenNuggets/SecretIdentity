@@ -23,9 +23,10 @@ void AArcadeGameMode::BeginPlay()
 	DebugFastFearMeter = false;
 	DebugDisableFearMeter = false;
 	DebugFastSpawnCrises = false;
+	DebugSpawnAllCrises = false;
 #endif
 
-	if (DebugFastFearMeter || DebugDisableFearMeter || DebugFastSpawnCrises)
+	if (DebugFastFearMeter || DebugDisableFearMeter || DebugFastSpawnCrises || DebugSpawnAllCrises)
 	{
 		LOG_MSG_WARNING("Debug values are enabled");
 	}
@@ -301,6 +302,20 @@ void AArcadeGameMode::SpawnCrisis()
 			}
 		}
 	}
+
+#if !UE_BUILD_SHIPPING
+	if (DebugSpawnAllCrises)
+	{
+		for (const auto& CSP : CrisisSpawnPoints)
+		{
+			WARN_IF_NULL(CSP);
+			if (CSP != nullptr && !CSP->IsCrisisActive())
+			{
+				CSP->SpawnCrisis(ThugEnemyClass);
+			}
+		}
+	}
+#endif //UE_BUILD_SHIPPING
 
 	//If all else fails, we'll just skip this cycle
 	if (spawnedCrisis)

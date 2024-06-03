@@ -134,6 +134,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
 	bool DebugFastSpawnCrises = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
+	bool DebugSpawnAllCrises = false;
+
 	//--------------------------------------------------//
 	//--------------- Internal -------------------------//
 	//--------------------------------------------------//
