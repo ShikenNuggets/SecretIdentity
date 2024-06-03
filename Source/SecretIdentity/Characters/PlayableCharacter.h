@@ -123,6 +123,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
 	UInputAction* FlightForwardAction = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input (Flight)", meta = (AllowPrivateAccess = "true"))
+	float ControllerSensitivityDivisorWhileFlying = 1.5f;
+
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Combat Input ----------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//

@@ -201,6 +201,7 @@ void APlayableCharacter::OnControlBegins()
 	WARN_IF_NULL(FlightMappingContext);
 	WARN_IF_NULL(FlightStrafeAction);
 	WARN_IF_NULL(FlightForwardAction);
+	WARN_IF(ControllerSensitivityDivisorWhileFlying < 0.01f);
 
 	WARN_IF_NULL(PunchAction);
 
@@ -542,10 +543,10 @@ void APlayableCharacter::OnLookInput(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
+	if (eControlState == EPlayerControlState::TravelPower_Flight_Forward && ControllerSensitivityDivisorWhileFlying >= 0.01f)
 	{
-		LookAxisVector.X /= 4.0f;
-		LookAxisVector.Y /= 4.0f;
+		LookAxisVector.X /= ControllerSensitivityDivisorWhileFlying;
+		LookAxisVector.Y /= ControllerSensitivityDivisorWhileFlying;
 	}
 
 	if (Controller != nullptr)
