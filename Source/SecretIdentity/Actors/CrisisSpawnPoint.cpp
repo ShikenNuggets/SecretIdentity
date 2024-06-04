@@ -18,6 +18,15 @@ void ACrisisSpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
 
+#if UE_BUILD_SHIPPING
+	DebugOnlyAllowOneSpawn = false;
+#endif
+
+	if (DebugOnlyAllowOneSpawn)
+	{
+		LOG_MSG_WARNING("Debug values are enabled");
+	}
+
 	bIsCrisisActive = false;
 	WARN_IF(TypeToSpawn >= CrisisType::Count);
 }
@@ -73,6 +82,13 @@ void ACrisisSpawnPoint::SpawnCrisis(TSubclassOf<ACharacter> ThugCharacterBP)
 	{
 		return; //Do not spawn two crises in the same location at the same time
 	}
+
+#if !UE_BUILD_SHIPPING
+	if (DebugOnlyAllowOneSpawn && bHasSpawnedOneCrisis)
+	{
+		return;
+	}
+#endif //!UE_BUILD_SHIPPING
 
 	ActivateCrisis();
 
@@ -185,6 +201,10 @@ void ACrisisSpawnPoint::ActivateCrisis()
 	bIsActiveCrisisResolved = false;
 	bIsCleaningUp = false;
 	fActiveCrisisStartTime = FDateTime::UtcNow();
+
+#if !UE_BUILD_SHIPPING
+	bHasSpawnedOneCrisis = true;
+#endif //!UE_BUILD_SHIPPING
 }
 
 void ACrisisSpawnPoint::ResolveCrisis()

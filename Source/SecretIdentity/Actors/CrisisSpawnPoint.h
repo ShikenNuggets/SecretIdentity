@@ -73,6 +73,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Crisis", meta = (AllowPrivateAccess = "true"))
 	float CooldownTime = 30.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
+	bool DebugOnlyAllowOneSpawn = false;
+
 	bool bIsCrisisActive = false;
 	bool bIsActiveCrisisResolved = false;
 	bool bIsCleaningUp = false;
@@ -80,6 +83,10 @@ private:
 	TArray<AActor*> tCrisisActors;
 	APawn* aPlayerPawn;
 	FTimerHandle fCooldownTimerHandle;
+
+#if !UE_BUILD_SHIPPING
+	bool bHasSpawnedOneCrisis = false;
+#endif
 
 	void ActivateCrisis();
 	void ResolveCrisis();

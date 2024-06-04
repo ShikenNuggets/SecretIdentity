@@ -134,6 +134,7 @@ void AArcadeGameMode::StartPlayState()
 
 		TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrisisSpawnPoint::StaticClass(), FoundActors);
+		WARN_IF(FoundActors.IsEmpty());
 
 		for (const auto& A : FoundActors)
 		{
