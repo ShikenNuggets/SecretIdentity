@@ -243,12 +243,12 @@ void APlayableCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	if (bHasTargetPosition && fTargetForPosition != nullptr && IsValid(fTargetForPosition))
+	if (bHasTargetPosition && aTarget != nullptr && IsValid(aTarget))
 	{
 		fPositionTimer += DeltaTime;
 		float PositionChangeTime = PunchMagnetMoveTime;
 
-		FVector TargetLocation = fTargetForPosition->GetActorLocation();
+		FVector TargetLocation = aTarget->GetActorLocation();
 		FVector Direction = TargetLocation - GetActorLocation();
 		Direction.Normalize();
 
@@ -258,7 +258,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 		if (fPositionTimer >= PositionChangeTime + 1.0f)
 		{
 			bHasTargetPosition = false;
-			fTargetForPosition = nullptr;
+			aTarget = nullptr;
 			fPositionTimer = 0.0f;
 		}
 	}
@@ -273,8 +273,9 @@ void APlayableCharacter::Tick(float DeltaTime)
 		{
 			fRotationChangeTime = FlightForwardRotationTime;
 		}
-		else if (eControlState == EPlayerControlState::Punching)
+		else if (eControlState == EPlayerControlState::Punching && aTarget != nullptr && IsValid(aTarget))
 		{
+			fTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), aTarget->GetActorLocation());
 			fRotationChangeTime = PunchMagnetMoveTime;
 			fAdditionalTime = 1.0f;
 		}
@@ -472,8 +473,7 @@ void APlayableCharacter::OnSwitchToPunchState()
 
 	if (NearestEnemy != nullptr && IsValid(NearestEnemy) && NearestDistance <= PunchMagnetRange)
 	{
-		SetTargetForPosition(NearestEnemy);
-		SetTargetRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NearestEnemy->GetActorLocation()));
+		SetTargetActor(NearestEnemy);
 	}
 }
 
@@ -669,17 +669,18 @@ void APlayableCharacter::OnPunchInput(const FInputActionValue& Value)
 	}
 }
 
-void APlayableCharacter::SetTargetForPosition(AActor* Target)
+void APlayableCharacter::SetTargetActor(AActor* Target)
 {
 	if (Target == nullptr || !IsValid(Target))
 	{
-		fTargetForPosition = nullptr;
+		aTarget = nullptr;
 		return;
 	}
 
 	bHasTargetPosition = true;
+	bHasTargetRotation = true;
 	fStartPosition = GetActorLocation();
-	fTargetForPosition = Target;
+	aTarget = Target;
 	fPositionTimer = 0.0f;
 }
 

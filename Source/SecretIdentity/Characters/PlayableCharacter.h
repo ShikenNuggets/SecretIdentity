@@ -185,7 +185,7 @@ private:
 	bool bHasTargetPosition = true;
 	bool bHasTargetRotation = false;
 	FVector fStartPosition = FVector::Zero();
-	AActor* fTargetForPosition = nullptr;
+	AActor* aTarget = nullptr;
 	FRotator fStartRotation = FRotator::ZeroRotator;
 	FRotator fTargetRotation = FRotator::ZeroRotator;
 	float fPositionTimer = 0.0f;
@@ -193,7 +193,7 @@ private:
 	bool bIsHoldingSprintKey = false;
 
 	void OnControlBegins(); //Called when the pawn is possessed
-	void SetTargetForPosition(AActor* Target);
+	void SetTargetActor(AActor* Target);
 	void SetTargetRotation(const FRotator& Target);
 
 public:
