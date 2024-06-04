@@ -268,6 +268,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 		fRotationTimer += DeltaTime;
 
 		float fRotationChangeTime = FlightStrafeRotationTime;
+		float fAdditionalTime = 0.0f;
 		if (eControlState == EPlayerControlState::TravelPower_Flight_Forward)
 		{
 			fRotationChangeTime = FlightForwardRotationTime;
@@ -275,11 +276,12 @@ void APlayableCharacter::Tick(float DeltaTime)
 		else if (eControlState == EPlayerControlState::Punching)
 		{
 			fRotationChangeTime = PunchMagnetMoveTime;
+			fAdditionalTime = 1.0f;
 		}
 
-		SetActorRotation(UKismetMathLibrary::Quat_Slerp(fStartRotation.Quaternion(), fTargetRotation.Quaternion(), fRotationTimer / fRotationChangeTime));
-		
-		if (fRotationTimer >= fRotationChangeTime)
+		SetActorRotation(UKismetMathLibrary::Quat_Slerp(fStartRotation.Quaternion(), fTargetRotation.Quaternion(), FMath::Clamp(fRotationTimer / fRotationChangeTime, 0.0f, 1.0f)));
+
+		if (fRotationTimer >= fRotationChangeTime + fAdditionalTime)
 		{
 			bHasTargetRotation = false;
 			SetActorRotation(fTargetRotation);
