@@ -9,7 +9,7 @@ UCombatSkeletalMeshComponent::UCombatSkeletalMeshComponent()
 {
 	SetSimulatePhysics(false);
 	SetEnableGravity(true);
-	SetCollisionProfileName(CollisionProfiles::Ragdoll);
+	SetCollisionProfileName(CollisionProfiles::PhysicsActor);
 	SetAllUseCCD(true);
 	SetGenerateOverlapEvents(true);
 }

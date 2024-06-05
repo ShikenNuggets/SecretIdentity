@@ -31,8 +31,20 @@ namespace CollisionProfiles
 	constexpr auto OverlapAll				= TEXT("OverlapAll");
 	constexpr auto BlockAllDynamic			= TEXT("OverlapAll");
 	constexpr auto OverlapAllDynamic		= TEXT("OverlapAll");
+	constexpr auto IgnoreOnlyPawn			= TEXT("IgnoreOnlyPawn");
+	constexpr auto OverlapOnlyPawn			= TEXT("OverlapOnlyPawn");
+	constexpr auto Pawn						= TEXT("Pawn");
+	constexpr auto Spectator				= TEXT("Spectator");
+	constexpr auto CharacterMesh			= TEXT("CharacterMesh");
+	constexpr auto PhysicsActor				= TEXT("PhysicsActor");
+	constexpr auto Destructible				= TEXT("Destructible");
+	constexpr auto InvisibleWall			= TEXT("InvisibleWall");
+	constexpr auto InvisibleWallDynamic		= TEXT("InvisibleWallDynamic");
+	constexpr auto Trigger					= TEXT("Trigger");
 	constexpr auto Ragdoll					= TEXT("Ragdoll");
+	constexpr auto Vehicle					= TEXT("Vehicle");
+	constexpr auto UI						= TEXT("UI");
 
-	constexpr auto CombatOnlyPhysicsBody	= TEXT("CombatOnlyPhysicsBody");
-	constexpr auto CombatCollider			= TEXT("CombatCollider");
+	//constexpr auto CombatOnlyPhysicsBody	= TEXT("CombatOnlyPhysicsBody");
+	//constexpr auto CombatCollider			= TEXT("CombatCollider");
 }
