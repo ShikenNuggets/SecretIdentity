@@ -150,6 +150,7 @@ private:
 	AArcadePlayerStart* aPlayerStart = nullptr;
 	bool bGameOver = false;
 	bool bIsPaused = false;
+	int fNumCrisesResolved = 0;
 
 	TArray<ACrisisSpawnPoint*> CrisisSpawnPoints;
 

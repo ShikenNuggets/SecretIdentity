@@ -73,20 +73,32 @@ void AArcadeGameMode::Tick(float DeltaTime)
 	fTimer += DeltaTime;
 	fPlayStateTimer += DeltaTime;
 
-	if (!IsAnyCrisisActive() && fTimer < (fCurrentSpawnTime - 5.0f))
+	if (fNumCrisesResolved < 3 && IsAnyCrisisActive())
 	{
-		fTimer = fCurrentSpawnTime - 5.0f; //Never have to wait more than 5 seconds for the next crisis if none are active
-
-		if (DebugFastSpawnCrises)
-		{
-			fTimer = fCurrentSpawnTime;
-		}
+		fTimer = 0.0f; //Only allow one crisis at a time to be resolved for the first 3
 	}
 
-	if (fTimer >= fCurrentSpawnTime)
+	float SpawnTime = fCurrentSpawnTime;
+	if (!IsAnyCrisisActive() && SpawnTime > 5.0f)
+	{
+		SpawnTime = 5.0f;
+	}
+	else if (GetNumActiveCrises() * 5.0f < SpawnTime)
+	{
+		SpawnTime = GetNumActiveCrises() * 5.0f; //If one is spawned, wait 5 seconds. If two are spawned, wait 10. Etc until fCurrentSpawnTime
+	}
+
+#if !UE_BUILD_SHIPPING
+	if (DebugFastSpawnCrises)
+	{
+		fTimer = fCurrentSpawnTime;
+	}
+#endif //!UE_BUILD_SHIPPING
+
+	if (fTimer >= SpawnTime)
 	{
 		SpawnCrisis();
-		fTimer -= fCurrentSpawnTime;
+		fTimer -= SpawnTime;
 
 		fCurrentSpawnTime -= 1.0f; //Enemies spawn in faster and faster as time goes on
 		fCurrentSpawnTime = FMath::Clamp(fCurrentSpawnTime, 1.0f, std::numeric_limits<float>::infinity()); //Things get weird if this number gets too low
@@ -390,8 +402,19 @@ double AArcadeGameMode::GetFearPercentage()
 
 void AArcadeGameMode::OnCrisisResolved(ACrisisSpawnPoint* CSP)
 {
+	fNumCrisesResolved++;
 	OnUpdateCrisisCount.Broadcast(GetNumActiveCrises());
 	OnUpdateFearMeter.Broadcast(GetFearPercentage());
+
+	//Clamp the time value so the next crisis doesn't spawn immediately after solving one
+	if (GetNumActiveCrises() * 5.0f < fCurrentSpawnTime && fTimer > (GetNumActiveCrises() * 5.0f) - 5.0f)
+	{
+		fTimer = FMath::Clamp(fTimer, 0.0f, (GetNumActiveCrises() * 5.0f) - 5.0f);
+	}
+	else
+	{
+		fTimer = FMath::Clamp(fTimer, 0.0f, fCurrentSpawnTime - 1.0f);
+	}
 }
 
 void AArcadeGameMode::GameOver()
