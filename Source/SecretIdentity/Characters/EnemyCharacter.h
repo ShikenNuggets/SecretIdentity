@@ -26,6 +26,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateWalkSpeed(float NewWalkSpeed);
 
+	UFUNCTION(BlueprintCallable)
+	void OnPatrol();
+
+	UFUNCTION(BlueprintCallable)
+	void OnChase();
+
 	bool IsDead() const{ return bIsDead; }
 
 	FEnemyCharacterDeathDelegate OnDeathDelegate;
@@ -34,6 +40,12 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float PatrolSpeed = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float ChaseSpeed = 400.0f;
+
 	UCombatSkeletalMeshComponent* uCombatMeshComponent;
 	bool bIsDead;
 

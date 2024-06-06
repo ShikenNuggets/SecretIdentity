@@ -51,6 +51,16 @@ void AEnemyCharacter::UpdateWalkSpeed(float NewWalkSpeed)
 	}
 }
 
+void AEnemyCharacter::OnPatrol()
+{
+	UpdateWalkSpeed(PatrolSpeed);
+}
+
+void AEnemyCharacter::OnChase()
+{
+	UpdateWalkSpeed(ChaseSpeed);
+}
+
 void AEnemyCharacter::OnDeath()
 {
 	if (uCombatMeshComponent != nullptr)
