@@ -12,6 +12,10 @@
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/Characters/PlayableCharacter.h"
 
+constexpr auto HasLineOfSightKey	= TEXT("HasLineOfSight");
+constexpr auto TargetActorKey		= TEXT("TargetActor");
+constexpr auto DistanceToTargetKey	= TEXT("DistanceToTarget");
+
 AEnemyAIController::AEnemyAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +34,7 @@ void AEnemyAIController::BeginPlay()
 	}
 	
 	WARN_IF_NULL(GetWorld());
+	WARN_IF_NULL(GetPawn());
 	WARN_IF_NULL(PerceptionComponent);
 	WARN_IF_NULL(EnemyBehaviorTree);
 }
@@ -37,6 +42,26 @@ void AEnemyAIController::BeginPlay()
 void AEnemyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Blackboard != nullptr)
+	{
+		bool HasLineOfSight = Blackboard->GetValueAsBool(HasLineOfSightKey);
+		if (!HasLineOfSight)
+		{
+			return;
+		}
+
+		AActor* TargetActor = Cast<AActor>(Blackboard->GetValueAsObject(TargetActorKey));
+
+		if (TargetActor != nullptr && GetPawn() != nullptr)
+		{
+			Blackboard->SetValueAsFloat(DistanceToTargetKey, FVector::Distance(GetPawn()->GetActorLocation(), TargetActor->GetActorLocation()));
+		}
+		else
+		{
+			Blackboard->SetValueAsFloat(DistanceToTargetKey, std::numeric_limits<float>::infinity());
+		}
+	}
 }
 
 void AEnemyAIController::OnPossess(APawn* InPawn)
@@ -83,9 +108,21 @@ void AEnemyAIController::OnStartEnemyTimer()
 
 void AEnemyAIController::SetBlackboardValues(bool HasLineOfSight, AActor* TargetActor)
 {
+	WARN_IF_NULL(Blackboard);
+	WARN_IF_NULL(GetPawn());
+
 	if (Blackboard != nullptr)
 	{
-		Blackboard->SetValueAsBool(TEXT("HasLineOfSight"), HasLineOfSight);
-		Blackboard->SetValueAsObject(TEXT("TargetActor"), TargetActor);
+		Blackboard->SetValueAsBool(HasLineOfSightKey, HasLineOfSight);
+		Blackboard->SetValueAsObject(TargetActorKey, TargetActor);
+
+		if (TargetActor != nullptr && GetPawn() != nullptr)
+		{
+			Blackboard->SetValueAsFloat(DistanceToTargetKey, FVector::Distance(GetPawn()->GetActorLocation(), TargetActor->GetActorLocation()));
+		}
+		else
+		{
+			Blackboard->SetValueAsFloat(DistanceToTargetKey, std::numeric_limits<float>::infinity());
+		}
 	}
 }
