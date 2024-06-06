@@ -46,6 +46,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float ChaseSpeed = 400.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float AttackRangeMin = 250.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float AttackRangeMax = 1000.0f;
+
 	UCombatSkeletalMeshComponent* uCombatMeshComponent;
 	bool bIsDead;
 
