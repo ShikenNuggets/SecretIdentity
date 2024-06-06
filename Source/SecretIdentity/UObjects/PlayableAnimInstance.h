@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data", meta = (AllowPrivateAccess = "true"))
 	bool IsPunching = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat Data", meta = (AllowPrivateAccess = "true"))
+	bool IsShooting = false;
+
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Anim Notify Triggers --------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//

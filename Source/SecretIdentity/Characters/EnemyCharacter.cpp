@@ -7,6 +7,7 @@
 
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/Components/CombatSkeletalMeshComponent.h"
+#include "SecretIdentity/UObjects/PlayableAnimInstance.h"
 
 AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCombatSkeletalMeshComponent>(ACharacter::MeshComponentName))
@@ -27,10 +28,17 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetMesh() != nullptr)
+	{
+		uAnimInstance = Cast<UPlayableAnimInstance>(GetMesh()->GetAnimInstance());
+	}
+
 	WARN_IF_NULL(GetCharacterMovement());
 	WARN_IF_NULL(GetController());
 	WARN_IF_NULL(GetCapsuleComponent());
+	WARN_IF_NULL(GetMesh());
 	WARN_IF_NULL(uCombatMeshComponent);
+	WARN_IF_NULL(uAnimInstance);
 }
 
 void AEnemyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -54,11 +62,24 @@ void AEnemyCharacter::UpdateWalkSpeed(float NewWalkSpeed)
 void AEnemyCharacter::OnPatrol()
 {
 	UpdateWalkSpeed(PatrolSpeed);
+
+	if (uAnimInstance != nullptr)
+	{
+		uAnimInstance->IsShooting = false;
+	}
 }
 
 void AEnemyCharacter::OnChase()
 {
 	UpdateWalkSpeed(ChaseSpeed);
+}
+
+void AEnemyCharacter::OnAttack()
+{
+	if (uAnimInstance != nullptr)
+	{
+		uAnimInstance->IsShooting = true;
+	}
 }
 
 void AEnemyCharacter::OnDeath()

@@ -109,7 +109,6 @@ void AEnemyAIController::OnStartEnemyTimer()
 void AEnemyAIController::SetBlackboardValues(bool HasLineOfSight, AActor* TargetActor)
 {
 	WARN_IF_NULL(Blackboard);
-	WARN_IF_NULL(GetPawn());
 
 	if (Blackboard != nullptr)
 	{

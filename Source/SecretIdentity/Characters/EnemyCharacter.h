@@ -9,6 +9,7 @@
 
 class AEnemyCharacter;
 class UCombatSkeletalMeshComponent;
+class UPlayableAnimInstance;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEnemyCharacterDeathDelegate, AEnemyCharacter*);
 
@@ -32,6 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnChase();
 
+	UFUNCTION(BlueprintCallable)
+	void OnAttack();
+
 	bool IsDead() const{ return bIsDead; }
 
 	FEnemyCharacterDeathDelegate OnDeathDelegate;
@@ -52,7 +56,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	float AttackRangeMax = 700.0f;
 
-	UCombatSkeletalMeshComponent* uCombatMeshComponent;
+	UCombatSkeletalMeshComponent* uCombatMeshComponent = nullptr;
+	UPlayableAnimInstance* uAnimInstance = nullptr;
 	bool bIsDead;
 
 	void OnDeath();
