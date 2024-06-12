@@ -34,7 +34,6 @@ void AEnemyAIController::BeginPlay()
 	}
 	
 	WARN_IF_NULL(GetWorld());
-	WARN_IF_NULL(GetPawn());
 	WARN_IF_NULL(PerceptionComponent);
 	WARN_IF_NULL(EnemyBehaviorTree);
 }
