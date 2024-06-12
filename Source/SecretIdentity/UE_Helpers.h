@@ -46,4 +46,11 @@ public:
 		int64 DifferenceInTicks = TimeStamp2.GetTicks() - TimeStamp1.GetTicks();
 		return DifferenceInTicks / 1'000'000.0;
 	}
+
+	template <class T>
+	static inline bool IsValid(T Value)
+	{
+		static_assert(std::is_enum<T>::value);
+		return static_cast<uint64_t>(Value) >= 0 && Value < T::Count;
+	}
 };
