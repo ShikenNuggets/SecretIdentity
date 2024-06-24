@@ -19,6 +19,7 @@ public class SecretIdentity : ModuleRules
 			"FieldSystemEngine",
 			"AIModule",
 			"ChaosCloth",
+			"Niagara",
 		});
 	}
 }
