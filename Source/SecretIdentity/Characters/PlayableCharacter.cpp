@@ -64,6 +64,11 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 		{
 			FollowCamera->SetupAttachment(CameraBoom, UPlayerCameraBoom::SocketName);
 			OnPlayerStateChangedDelegate.AddUObject(FollowCamera, &UPlayerCameraComponent::OnPlayerStateChanged);
+
+			if (uMovementComponent != nullptr)
+			{
+				uMovementComponent->OnFlightSpeedChanged.AddUObject(FollowCamera, &UPlayerCameraComponent::OnFlightSpeedChanged);
+			}
 		}
 	}
 
@@ -293,13 +298,14 @@ void APlayableCharacter::Tick(float DeltaTime)
 	//TODO - Ideally this would be called at the exact moment we land, but this is fine for now
 	if (eControlState == EPlayerControlState::Sprinting && !bIsHoldingSprintKey && GetCharacterMovement() != nullptr && GetCharacterMovement()->IsMovingOnGround())
 	{
-		LOG_MSG("Stopping Sprint");
 		SwitchState(EPlayerControlState::Default);
 	}
 }
 
 void APlayableCharacter::SwitchState(EPlayerControlState NewState)
 {
+	WARN_IF(!UE_Helpers::IsValid(NewState));
+
 	if (!IsStateSwitchValid(eControlState, NewState))
 	{
 		return;

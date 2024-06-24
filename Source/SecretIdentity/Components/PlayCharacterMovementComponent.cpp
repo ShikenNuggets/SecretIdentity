@@ -23,6 +23,18 @@ UPlayCharacterMovementComponent::UPlayCharacterMovementComponent()
 	MaxWalkSpeed = JogSpeed;
 
 	fDefaultMaxAcceleration = MaxAcceleration;
+	bIsNearMaxFlightSpeed = false;
+}
+
+void UPlayCharacterMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	WARN_IF(MaxSpeedEnterThreshold < MaxSpeedExitThreshold);
+	WARN_IF(MaxSpeedEnterThreshold < 0.001f || MaxSpeedEnterThreshold > 0.999f);
+	WARN_IF(MaxSpeedExitThreshold < 0.001f || MaxSpeedExitThreshold > 0.999f);
+	MaxSpeedEnterThreshold = FMath::Clamp(MaxSpeedEnterThreshold, 0.001f, 0.999f);
+	MaxSpeedExitThreshold = FMath::Clamp(MaxSpeedExitThreshold, 0.001f, 0.999f);
 }
 
 void UPlayCharacterMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -32,6 +44,16 @@ void UPlayCharacterMovementComponent::TickComponent(float DeltaTime, enum ELevel
 	if (MovementMode == EMovementMode::MOVE_Flying)
 	{
 		ApplyVelocityBraking(DeltaTime, BrakingFriction, BrakingDecelerationFlying);
+		if (!bIsNearMaxFlightSpeed && Velocity.Size() >= MaxFlightForwardSpeed * MaxSpeedEnterThreshold)
+		{
+			bIsNearMaxFlightSpeed = true;
+			OnFlightSpeedChanged.Broadcast(bIsNearMaxFlightSpeed);
+		}
+		else if(bIsNearMaxFlightSpeed && Velocity.Size() < MaxFlightForwardSpeed * MaxSpeedExitThreshold)
+		{
+			bIsNearMaxFlightSpeed = false;
+			OnFlightSpeedChanged.Broadcast(bIsNearMaxFlightSpeed);
+		}
 	}
 }
 
@@ -42,6 +64,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 		case EPlayerControlState::None:
 			MaxWalkSpeed = 0.0f;
 			bOrientRotationToMovement = true;
+			bIsNearMaxFlightSpeed = false;
 			SetMovementMode(EMovementMode::MOVE_None);
 			break;
 
@@ -49,17 +72,20 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 			MaxWalkSpeed = JogSpeed;
 			MaxAcceleration = fDefaultMaxAcceleration;
 			bOrientRotationToMovement = true;
+			bIsNearMaxFlightSpeed = false;
 			SetMovementMode(EMovementMode::MOVE_Walking);
 			break;
 
 		case EPlayerControlState::Sprinting:
 			MaxWalkSpeed = JogSpeed * DefaultSprintMultiplier;
 			bOrientRotationToMovement = true;
+			bIsNearMaxFlightSpeed = false;
 			break;
 
 		case EPlayerControlState::Punching:
 			MaxWalkSpeed = JogSpeed;
 			bOrientRotationToMovement = true;
+			bIsNearMaxFlightSpeed = false;
 			SetMovementMode(EMovementMode::MOVE_None);
 			break;
 
@@ -68,6 +94,7 @@ void UPlayCharacterMovementComponent::OnPlayerStateChanged(EPlayerControlState S
 			MaxAcceleration = fDefaultMaxAcceleration * 8.0f;
 			Velocity.Z = 0.0f;
 			bOrientRotationToMovement = false;
+			bIsNearMaxFlightSpeed = false;
 			SetMovementMode(EMovementMode::MOVE_Flying);
 			break;
 

@@ -16,7 +16,8 @@ UPlayerCameraComponent::UPlayerCameraComponent() : FOVChangeTime(0.25f), bHasTar
 void UPlayerCameraComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	WARN_IF(FMath::IsNearlyZero(FOVChangeTime) || FOVChangeTime < 0.0f);
+	WARN_IF(FMath::IsNearlyZero(FOVChangeTime) || FOVChangeTime <= 0.0f);
+	WARN_IF(FMath::IsNearlyZero(FOVMaxSpeedChangeTime) || FOVMaxSpeedChangeTime <= 0.0f);
 }
 
 void UPlayerCameraComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -25,11 +26,12 @@ void UPlayerCameraComponent::TickComponent(float DeltaTime, enum ELevelTick Tick
 
 	if (bHasTargetFOV)
 	{
+		WARN_IF(FMath::IsNearlyZero(fCurrentFOVChangeTime) || fCurrentFOVChangeTime <= 0.0f);
 		fTimer += DeltaTime;
 
-		FieldOfView = FMath::Lerp(fStartFOV, fTargetFOV, fTimer / FOVChangeTime);
+		FieldOfView = FMath::Lerp(fStartFOV, fTargetFOV, fTimer / fCurrentFOVChangeTime);
 		
-		if (fTimer >= FOVChangeTime)
+		if (fTimer >= fCurrentFOVChangeTime)
 		{
 			bHasTargetFOV = false;
 			FieldOfView = fTargetFOV;
@@ -48,7 +50,23 @@ void UPlayerCameraComponent::SetTargetFOV(float Target)
 	bHasTargetFOV = true;
 	fStartFOV = FieldOfView;
 	fTargetFOV = Target;
+	fCurrentFOVChangeTime = FOVChangeTime;
 	fTimer = 0.0f;
+}
+
+void UPlayerCameraComponent::SetTargetFOVWithDelay(float Target)
+{
+	WARN_IF_NULL(GetWorld());
+
+	if (GetWorld())
+	{
+		FTimerHandle handle;
+		GetWorld()->GetTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([&, Target]
+		{
+			SetTargetFOV(Target);
+			fCurrentFOVChangeTime = FOVMaxSpeedChangeTime;
+		}), FOVChangeDelay, false);
+	}
 }
 
 void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
@@ -70,5 +88,17 @@ void UPlayerCameraComponent::OnPlayerStateChanged(EPlayerControlState State)
 		default:
 			WARN_IF_MSG(true, "EPlayerControlState case not handled in UPlayerCameraComponent::OnPlayerStateChanged!");
 			break;
+	}
+}
+
+void UPlayerCameraComponent::OnFlightSpeedChanged(bool IsNearMaxSpeed)
+{
+	if (IsNearMaxSpeed)
+	{
+		SetTargetFOVWithDelay(FlightMaxSpeedFOV);
+	}
+	else
+	{
+		SetTargetFOV(FlightFOV);
 	}
 }

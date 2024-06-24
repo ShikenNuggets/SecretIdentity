@@ -9,6 +9,8 @@
 
 #include "PlayCharacterMovementComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerFlightMaxSpeedDelegate, bool); //bIsNearMaxSpeed
+
 UCLASS()
 class SECRETIDENTITY_API UPlayCharacterMovementComponent : public UCharacterMovementComponent
 {
@@ -17,9 +19,12 @@ class SECRETIDENTITY_API UPlayCharacterMovementComponent : public UCharacterMove
 public:
 	UPlayCharacterMovementComponent();
 
+	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void OnPlayerStateChanged(EPlayerControlState State);
+
+	FPlayerFlightMaxSpeedDelegate OnFlightSpeedChanged;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
@@ -34,5 +39,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
 	float MaxFlightForwardSpeed = 7500.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
+	float MaxSpeedEnterThreshold = 0.4f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Playable Character Movement", meta = (AllowPrivateAccess = "true"))
+	float MaxSpeedExitThreshold = 0.3f;
+
 	float fDefaultMaxAcceleration;
+	bool bIsNearMaxFlightSpeed;
 };
