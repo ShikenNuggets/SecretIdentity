@@ -17,6 +17,8 @@ class UEnhancedInputLocalPlayerSubsystem;
 class UInputMappingContext;
 class UInputAction;
 class UMusicAudioComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UPlayableAnimInstance;
 class UPlayCharacterMovementComponent;
 class USphereComponent;
@@ -57,6 +59,8 @@ protected:
 	void OnSwitchToPunchState();
 	void OnSwitchToTravelPowerFlightStrafeState();
 	void OnSwitchToTravelPowerFlightForwardState();
+
+	void OnFlightSpeedChanged(bool IsNearMaxSpeed);
 
 	// Default Input
 	void OnLookInput(const FInputActionValue& Value);
@@ -153,6 +157,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cape", meta = (AllowPrivateAccess = "true"))
 	AWindDirectionalSource* WindSource = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cape", meta = (AllowPrivateAccess = "true"))
+	UNiagaraSystem* SpeedLinesFX = nullptr;
+
 	//-----------------------------------------------------------------------------------------------------//
 	//----------------------- Combat ----------------------------------------------------------------------//
 	//-----------------------------------------------------------------------------------------------------//
@@ -179,6 +186,7 @@ private:
 	UPlayCharacterMovementComponent* uMovementComponent = nullptr;
 	UPlayableAnimInstance* uAnimInstance = nullptr;
 	UEnhancedInputLocalPlayerSubsystem* uInputSubsystem = nullptr;
+	UNiagaraComponent* uNiagaraComponent = nullptr;
 	AArcadeGameMode* aGameMode = nullptr;
 	EPlayerControlState eControlState = EPlayerControlState::None;
 

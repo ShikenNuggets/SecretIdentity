@@ -17,6 +17,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "SecretIdentity/UE_Helpers.h"
 #include "SecretIdentity/Actors/CombatFieldSystemActor.h"
@@ -49,6 +51,7 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& ObjectInitializ
 	if (uMovementComponent != nullptr)
 	{
 		OnPlayerStateChangedDelegate.AddUObject(uMovementComponent, &UPlayCharacterMovementComponent::OnPlayerStateChanged);
+		uMovementComponent->OnFlightSpeedChanged.AddUObject(this, &APlayableCharacter::OnFlightSpeedChanged);
 	}
 
 	CameraBoom = CreateDefaultSubobject<UPlayerCameraBoom>(TEXT("CameraBoom"));
@@ -189,6 +192,12 @@ void APlayableCharacter::OnControlBegins()
 		}
 	}
 
+	if (SpeedLinesFX != nullptr && GetMesh() != nullptr)
+	{
+		uNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(SpeedLinesFX, GetMesh(), NAME_None, FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 90.0f, 0.0f), EAttachLocation::Type::KeepRelativeOffset, false);
+		uNiagaraComponent->SetEmitterEnable(TEXT("Fountain"), false);
+	}
+
 	WARN_IF_NULL(GetWorld());
 	WARN_IF_NULL(GetMesh());
 	WARN_IF_NULL(GetCapsuleComponent());
@@ -216,6 +225,7 @@ void APlayableCharacter::OnControlBegins()
 	WARN_IF_NULL(MusicPlayer);
 
 	WARN_IF_NULL(WindSource);
+	WARN_IF_NULL(SpeedLinesFX);
 
 	WARN_IF_NULL(FieldSystemActorBP);
 	WARN_IF_NULL(RightHandCollider);
@@ -223,6 +233,7 @@ void APlayableCharacter::OnControlBegins()
 
 	WARN_IF_NULL(uMovementComponent);
 	WARN_IF_NULL(uAnimInstance);
+	WARN_IF_NULL(uNiagaraComponent);
 	WARN_IF_NULL(uInputSubsystem);
 	WARN_IF_NULL(aGameMode);
 
@@ -434,6 +445,7 @@ void APlayableCharacter::OnSwitchToDefaultState()
 		uInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
+	OnFlightSpeedChanged(false);
 	OnAnimNotifyTriggerDisableHandCollision(); //This is redundant - Just in case the punch animation gets interrupted or something
 }
 
@@ -445,6 +457,8 @@ void APlayableCharacter::OnSwitchToSprintingState()
 	{
 		uAnimInstance->IsSprinting = true;
 	}
+
+	OnFlightSpeedChanged(false);
 }
 
 void APlayableCharacter::OnSwitchToPunchState()
@@ -481,6 +495,8 @@ void APlayableCharacter::OnSwitchToPunchState()
 	{
 		SetTargetActor(NearestEnemy);
 	}
+
+	OnFlightSpeedChanged(false);
 }
 
 void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
@@ -496,6 +512,8 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightStrafeState()
 		uInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		uInputSubsystem->AddMappingContext(FlightMappingContext, 0);
 	}
+
+	OnFlightSpeedChanged(false);
 }
 
 void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
@@ -509,6 +527,15 @@ void APlayableCharacter::OnSwitchToTravelPowerFlightForwardState()
 	{
 		uInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 		uInputSubsystem->AddMappingContext(FlightMappingContext, 0);
+	}
+}
+
+void APlayableCharacter::OnFlightSpeedChanged(bool IsNearMaxSpeed)
+{
+	WARN_IF_NULL(uNiagaraComponent);
+	if (uNiagaraComponent != nullptr)
+	{
+		uNiagaraComponent->SetEmitterEnable(TEXT("Fountain"), IsNearMaxSpeed);
 	}
 }
 
