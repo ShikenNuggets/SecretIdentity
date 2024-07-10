@@ -42,14 +42,14 @@ void APlayableCharacterController::BeginPlay()
 				WARN_IF_MSG(true, "EArcadeGameState case not handled!");
 				break;
 		}
-	}
 
-	if (HudWidgetClass != nullptr)
-	{
-		uHudWidget = CreateWidget(this, HudWidgetClass);
-		if (uHudWidget != nullptr)
+		if (HudWidgetClass != nullptr)
 		{
-			uHudWidget->AddToViewport();
+			uHudWidget = CreateWidget(this, HudWidgetClass);
+			if (uHudWidget != nullptr)
+			{
+				uHudWidget->AddToViewport();
+			}
 		}
 	}
 
